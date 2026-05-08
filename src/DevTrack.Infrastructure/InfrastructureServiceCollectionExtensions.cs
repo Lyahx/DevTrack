@@ -14,8 +14,8 @@ public static class InfrastructureServiceCollectionExtensions
             ?? throw new InvalidOperationException("ConnectionStrings:Default is required.");
 
         services.AddDbContext<DevTrackDbContext>(options =>
-            options.UseSqlServer(connectionString, sql =>
-                sql.MigrationsAssembly(typeof(DevTrackDbContext).Assembly.FullName)));
+            options.UseNpgsql(connectionString, npg =>
+                npg.MigrationsAssembly(typeof(DevTrackDbContext).Assembly.FullName)));
 
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
         services.AddSingleton<IJwtTokenService, JwtTokenService>();

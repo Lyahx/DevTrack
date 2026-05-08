@@ -6,7 +6,8 @@ Bu dosya projeye geri döndüğünde 30 saniyede yerini bulman için. Detaylı d
 
 ## Şu an nerede
 
-- **Prompt 1, 2, 3 tamamı bitti.** Backend (.NET 10 + MSSQL) Docker'da, frontend (Next.js 16) `npm run dev` ile.
+- **Prompt 1, 2, 3 tamamı bitti.** Backend (.NET 10 + **PostgreSQL 16**) Docker'da, frontend (Next.js 16) `npm run dev` ile.
+- **DB taşıma 2026-05-08:** MSSQL → PostgreSQL (Npgsql). Mevcut data **silindi**, sıfırdan migration oluşturuluyor.
 - Tarayıcıdan **http://localhost:3000** → register/login → dashboard çalışıyor.
 - Son test: dev quick-login + mock seed + dashboard + Resume Mode + commit listesi → hepsi yeşil.
 
@@ -42,13 +43,30 @@ Kullanıcının kendi dediği: _"genel tasarım mantığı güzel ama biraz daha
 # 1. Docker Desktop'ı aç (sistem tepsisinden)
 # 2. Backend
 cd C:\Users\MSI\Desktop\DevTrack
-docker compose up -d            # mssql + api ayağa kalkar (~30 sn)
+docker compose up -d            # postgres + api ayağa kalkar (~10 sn)
 
 # 3. Frontend (ayrı terminal)
 cd web
 npm run dev                     # http://localhost:3000
 
 # 4. Tarayıcıda /login → "Dev: hızlı giriş" → /settings → "Mock data yükle"
+```
+
+**PostgreSQL ilk kurulum (ya da yeniden migration gerektiğinde):**
+
+```powershell
+# Eski MSSQL container/volume'ünü temizle (varsa)
+docker compose down -v
+
+# Postgres'i ayağa kaldır
+docker compose up -d postgres
+
+# Migration oluştur (host üzerinde dotnet kuruluysa)
+dotnet ef migrations add InitialCreate `
+  -p src/DevTrack.Infrastructure -s src/DevTrack.Api
+
+# API ayağa kalkınca DEVTRACK_AUTO_MIGRATE=true sayesinde migration uygulanır
+docker compose up -d api
 ```
 
 `.env` repo kökünde mevcut (kapatma sırasında silinmez, yeniden generate gerekmez).
@@ -58,6 +76,7 @@ npm run dev                     # http://localhost:3000
 - Soft-restore (geri yükleme) hâlâ yok — `/trash` sayfası kullanıcıya bunu söylüyor.
 - Reminder generator daily 03:00 UTC çalışıyor, ama dev'de manuel tetikleyince bir kerelik tek reminder geliyor (mock seed sırasında 1 stale tracking var).
 - `CORS:AllowedOrigins` tek origin (`http://localhost:3000`); başka frontend host'undan denemek için env var değiştir.
+- DB artık PostgreSQL — eski MSSQL connection string'i / volume'ü kalmadı. Eski mock data yok, `/settings` → "Mock data yükle" ile yeniden bas.
 - shadcn/ui artık **Base UI** kullanıyor (Radix değil) — `asChild` yok, `render` prop var. Yeni UI değişiklikleri yaparken bu fark akılda tutulsun.
 - AutoMapper **16** (commercial license alanına yakın) — gerekirse Mapperly'ye geçilebilir, ama şu an çalışıyor.
 

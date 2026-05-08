@@ -51,7 +51,7 @@ export function CommitList({ projectId, hasRepo }: { projectId: number; hasRepo:
             {[0, 1, 2].map((i) => <Skeleton key={i} className="h-10 w-full" />)}
           </div>
         ) : data.data?.error ? (
-          <p className="rounded-md bg-amber-100/50 p-2 text-xs text-amber-900 dark:bg-amber-950/30 dark:text-amber-300">
+          <p className="rounded-md border border-warning/30 bg-warning-soft p-2 text-xs text-warning">
             {data.data.error}
           </p>
         ) : !data.data?.commits.length ? (

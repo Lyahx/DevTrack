@@ -132,7 +132,7 @@ export function ComponentFormModal({
             </Field>
           </div>
           <Field label="Tech stack">
-            <Input placeholder="Next.js, .NET 10, MSSQL…" {...register("techStack")} />
+            <Input placeholder="Next.js, .NET 10, PostgreSQL…" {...register("techStack")} />
           </Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Local URL">

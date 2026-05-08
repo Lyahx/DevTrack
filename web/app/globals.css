@@ -2,119 +2,217 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ========================================================================
+   Linear-inspired token system
+   Source of truth = dark theme on :root[data-theme="dark"]
+   Light theme mirrors via :root[data-theme="light"]
+   ======================================================================== */
+
+:root,
+:root[data-theme="dark"] {
+  /* Surfaces — ascending elevation */
+  --color-canvas: #08090a;
+  --color-surface-1: #0f1011;
+  --color-surface-2: #161718;
+  --color-surface-3: #23252a;
+
+  /* Borders */
+  --color-border: #23252a;
+  --color-border-subtle: #161718;
+  --color-border-strong: #323334;
+
+  /* Text */
+  --color-text: #f7f8f8;
+  --color-text-secondary: #d0d6e0;
+  --color-text-muted: #8a8f98;
+  --color-text-faint: #62666d;
+
+  /* Brand accent — warmer violet, used sparingly but not as restricted as Linear */
+  --color-accent: #a78bfa;
+  --color-accent-foreground: #0f0820;
+  --color-accent-soft: rgba(167, 139, 250, 0.12);
+  --color-accent-ring: rgba(167, 139, 250, 0.25);
+
+  /* Semantic */
+  --color-success: #27a644;
+  --color-success-soft: rgba(39, 166, 68, 0.14);
+  --color-info: #02b8cc;
+  --color-info-soft: rgba(2, 184, 204, 0.14);
+  --color-warning: #eb5757;
+  --color-warning-soft: rgba(235, 87, 87, 0.16);
+  --color-violet: #8b5cf6;
+  --color-blue: #5e6ad2;
+
+  /* Inputs */
+  --color-input: #08090a;
+  --color-input-subtle: #161718;
+
+  /* Shadows — softer, for warmth */
+  --shadow-soft: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  --shadow-card: 0 2px 8px 0 rgba(0, 0, 0, 0.35), 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  --shadow-modal: 0 8px 40px 0 rgba(0, 0, 0, 0.5);
+  --shadow-hairline: inset 0 0 0 1px var(--color-border);
+
+  /* shadcn token mapping — keeps existing components on the new palette */
+  --background: var(--color-canvas);
+  --foreground: var(--color-text);
+  --card: var(--color-surface-1);
+  --card-foreground: var(--color-text);
+  --popover: var(--color-surface-2);
+  --popover-foreground: var(--color-text);
+  --primary: var(--color-accent);
+  --primary-foreground: var(--color-accent-foreground);
+  --secondary: var(--color-surface-2);
+  --secondary-foreground: var(--color-text);
+  --muted: var(--color-surface-2);
+  --muted-foreground: var(--color-text-muted);
+  --accent: var(--color-surface-3);
+  --accent-foreground: var(--color-text);
+  --destructive: var(--color-warning);
+  --border: var(--color-border);
+  --input: var(--color-input);
+  --ring: var(--color-border-strong);
+  --sidebar: var(--color-surface-1);
+  --sidebar-foreground: var(--color-text);
+  --sidebar-primary: var(--color-accent);
+  --sidebar-primary-foreground: var(--color-accent-foreground);
+  --sidebar-accent: var(--color-surface-2);
+  --sidebar-accent-foreground: var(--color-text);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-border-strong);
+  --radius: 6px;
+}
+
+:root[data-theme="light"] {
+  /* Surfaces */
+  --color-canvas: #fafafa;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #f5f5f5;
+  --color-surface-3: #ebebeb;
+
+  /* Borders */
+  --color-border: #e1e1e1;
+  --color-border-subtle: #ededed;
+  --color-border-strong: #c8c8c8;
+
+  /* Text */
+  --color-text: #08090a;
+  --color-text-secondary: #2a2c30;
+  --color-text-muted: #6b7079;
+  --color-text-faint: #8a8f98;
+
+  /* Brand accent — darker violet for AA contrast on light surface */
+  --color-accent: #7c3aed;
+  --color-accent-foreground: #ffffff;
+  --color-accent-soft: rgba(124, 58, 237, 0.10);
+  --color-accent-ring: rgba(124, 58, 237, 0.22);
+
+  /* Semantic — slightly desaturated */
+  --color-success: #008d2c;
+  --color-success-soft: rgba(0, 141, 44, 0.10);
+  --color-info: #0288a0;
+  --color-info-soft: rgba(2, 136, 160, 0.10);
+  --color-warning: #d63838;
+  --color-warning-soft: rgba(214, 56, 56, 0.10);
+  --color-violet: #7c3aed;
+  --color-blue: #4f5bc4;
+
+  /* Inputs */
+  --color-input: #ffffff;
+  --color-input-subtle: #f5f5f5;
+
+  /* Shadows — softer for light */
+  --shadow-soft: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-modal: 0 16px 48px 0 rgba(0, 0, 0, 0.18);
+  --shadow-hairline: inset 0 0 0 1px var(--color-border);
+}
+
+/* ========================================================================
+   Tailwind theme — exposes the token system to utility classes
+   ======================================================================== */
 
 @theme inline {
+  /* Linear surfaces & borders */
+  --color-canvas: var(--color-canvas);
+  --color-surface-1: var(--color-surface-1);
+  --color-surface-2: var(--color-surface-2);
+  --color-surface-3: var(--color-surface-3);
+  --color-border: var(--color-border);
+  --color-border-subtle: var(--color-border-subtle);
+  --color-border-strong: var(--color-border-strong);
+
+  /* Linear text scale */
+  --color-text: var(--color-text);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-faint: var(--color-text-faint);
+
+  /*
+   * NOTE on accent: do NOT expose --color-accent / --color-accent-foreground
+   * to Tailwind utilities. shadcn primitives use `bg-accent`/`text-accent-foreground`
+   * for their subtle hover/focus states — those must keep mapping to surface-3 + text
+   * (via the shadcn `--accent` / `--accent-foreground` tokens defined on :root).
+   * Use `bg-primary` / `text-primary-foreground` whenever you want the brand violet.
+   */
+  --color-success: var(--color-success);
+  --color-success-soft: var(--color-success-soft);
+  --color-info: var(--color-info);
+  --color-info-soft: var(--color-info-soft);
+  --color-warning: var(--color-warning);
+  --color-warning-soft: var(--color-warning-soft);
+  --color-violet: var(--color-violet);
+  --color-blue: var(--color-blue);
+  --color-input-subtle: var(--color-input-subtle);
+
+  /* shadcn aliases — re-export so utility classes keep working */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-}
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-inter);
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Radii — slightly more open than pure Linear */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 16px;
+  --radius-4xl: 16px;
+
+  /* Shadows */
+  --shadow-soft: var(--shadow-soft);
+  --shadow-card: var(--shadow-card);
+  --shadow-modal: var(--shadow-modal);
+  --shadow-hairline: var(--shadow-hairline);
 }
 
 @layer base {
@@ -122,9 +220,30 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-canvas);
+    color: var(--color-text);
+    font-feature-settings: "ss01", "cv11";
+    letter-spacing: -0.005em;
   }
   html {
     @apply font-sans;
+    font-size: 14px;
+  }
+  h1, h2, h3, h4 {
+    color: var(--color-text);
+    letter-spacing: -0.015em;
+  }
+  /* Inter weight 510 / 590 — match Linear's voice */
+  .font-medium { font-weight: 510; }
+  .font-semibold { font-weight: 590; }
+  .font-bold { font-weight: 590; }
+
+  /* Status dot helper */
+  .status-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    flex-shrink: 0;
   }
 }

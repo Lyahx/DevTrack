@@ -2,9 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { buttonVariants } from "@/components/ui/button";
 import { useQuickCaptureStore } from "@/store/quickCapture";
-import { cn } from "@/lib/utils";
 
 export function QuickCaptureFab() {
   const openCapture = useQuickCaptureStore((s) => s.openCapture);
@@ -14,10 +12,7 @@ export function QuickCaptureFab() {
         type="button"
         onClick={() => openCapture()}
         aria-label="Hızlı yakala (Ctrl+J / ⌘J)"
-        className={cn(
-          buttonVariants({ variant: "default", size: "icon" }),
-          "fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full shadow-lg",
-        )}
+        className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-card ring-2 ring-surface-1 transition-all hover:brightness-110 hover:scale-105"
       >
         <Plus className="h-5 w-5" />
       </TooltipTrigger>

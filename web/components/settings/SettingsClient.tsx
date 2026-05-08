@@ -104,9 +104,9 @@ export function SettingsClient() {
         </CardContent>
       </Card>
 
-      <Card className="border-amber-300/40 bg-amber-50/30 dark:bg-amber-950/20">
+      <Card className="border-warning/40 bg-warning-soft">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base text-amber-900 dark:text-amber-300">
+          <CardTitle className="flex items-center gap-2 text-base text-warning">
             <Database className="h-4 w-4" /> Geliştirici araçları
           </CardTitle>
         </CardHeader>
@@ -141,7 +141,7 @@ export function SettingsClient() {
         <CardContent className="space-y-1 text-sm text-muted-foreground">
           <p>Kişisel proje ve öğrenme takipçisi.</p>
           <p>Front: Next.js 16 · Tailwind v4 · shadcn/ui · TanStack Query</p>
-          <p>Back: .NET 10 · EF Core · MSSQL</p>
+          <p>Back: .NET 10 · EF Core · PostgreSQL</p>
         </CardContent>
       </Card>
     </div>

@@ -95,10 +95,10 @@ export function ProjectsList() {
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((p) => (
             <Link key={p.id} href={`/projects/${p.id}`} className="group">
-              <Card className={`h-full transition-colors group-hover:border-primary/50 ${p.isDeleted ? "opacity-60" : ""}`}>
+              <Card className={`h-full transition-all hover:border-border hover:shadow-card hover:-translate-y-px ${p.isDeleted ? "opacity-60" : ""}`}>
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-base font-semibold group-hover:text-primary">{p.name}</CardTitle>
+                    <CardTitle className="text-base font-semibold">{p.name}</CardTitle>
                     <ProjectStatusBadge status={p.status} />
                   </div>
                   {p.goal ? <p className="line-clamp-2 text-sm text-muted-foreground">{p.goal}</p> : null}

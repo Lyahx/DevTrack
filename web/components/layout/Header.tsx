@@ -7,12 +7,12 @@ import { UserMenu } from "./UserMenu";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 flex h-14 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur md:px-6">
-      <Link href="/" className="flex items-center gap-2 font-semibold">
-        <span className="inline-block h-6 w-6 rounded-md bg-primary text-primary-foreground text-xs font-bold leading-6 text-center">D</span>
+    <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b border-border bg-surface-1 px-4 md:px-5">
+      <Link href="/" className="flex items-center gap-2 text-[13px] font-medium text-text">
+        <span className="inline-block h-5 w-5 rounded-sm bg-primary text-center text-[11px] font-semibold leading-5 text-primary-foreground">D</span>
         <span>DevTrack</span>
       </Link>
-      <div className="mx-auto flex w-full max-w-2xl items-center justify-center">
+      <div className="flex flex-1 justify-center">
         <CommandTrigger />
       </div>
       <div className="flex items-center gap-1">

@@ -158,7 +158,7 @@ export function LearningTrackDetailClient({ trackId }: { trackId: number }) {
                   <Card key={m.id}>
                     <CardHeader className="flex flex-row items-center gap-3 py-3">
                       <span className="w-6 text-xs text-muted-foreground">#{m.order}</span>
-                      <Link href={`/learning/${trackId}/modules/${m.id}`} className="flex-1 text-base font-medium hover:text-primary">
+                      <Link href={`/learning/${trackId}/modules/${m.id}`} className="flex-1 text-base font-medium hover:underline">
                         {m.name}
                       </Link>
                       <Select value={m.status} onValueChange={(v) => setModuleStatus.mutate({ id: m.id, status: v as LearningModuleStatus })}>

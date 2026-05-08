@@ -166,7 +166,7 @@ export function ProjectDetailClient({ projectId }: { projectId: number }) {
                     <Card key={c.id}>
                       <CardHeader className="pb-2">
                         <div className="flex flex-wrap items-center justify-between gap-2">
-                          <Link href={`/components/${c.id}`} className="text-base font-semibold hover:text-primary">
+                          <Link href={`/components/${c.id}`} className="text-base font-semibold hover:underline">
                             {c.name}
                           </Link>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">

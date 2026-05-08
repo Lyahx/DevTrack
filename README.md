@@ -5,7 +5,7 @@ A personal project & learning tracker. DevTrack helps you keep multiple parallel
 ## Stack
 
 - .NET 10 / ASP.NET Core Web API
-- Entity Framework Core 10 + Microsoft SQL Server 2022
+- Entity Framework Core 10 + PostgreSQL 16 (via Npgsql)
 - Scalar.AspNetCore (API docs)
 - BCrypt.Net-Next + JWT Bearer
 - Serilog (console + rolling file)
@@ -17,7 +17,7 @@ A personal project & learning tracker. DevTrack helps you keep multiple parallel
 ```
 DevTrack/
 ├── DevTrack.sln                 — backend solution
-├── docker-compose.yml           — mssql + api
+├── docker-compose.yml           — postgres + api
 ├── src/                         — .NET backend
 │   ├── DevTrack.Api             — controllers, middleware, hosted services, Program.cs
 │   ├── DevTrack.Service         — business logic, validators, activity tracker, resume/dashboard, reminder generator
@@ -38,7 +38,7 @@ Prereqs: Docker Desktop (with Compose v2).
 
 ```bash
 cp .env.example .env
-# Edit .env: set a strong MSSQL_SA_PASSWORD and a JWT_SECRET (>= 32 chars).
+# Edit .env: set a strong POSTGRES_PASSWORD and a JWT_SECRET (>= 32 chars).
 docker compose up --build
 ```
 
@@ -48,11 +48,11 @@ API docs: open `http://localhost:8080/scalar/v1` in a browser.
 
 ## Run without Docker
 
-Prereqs: .NET 10 SDK and a reachable MSSQL Server instance.
+Prereqs: .NET 10 SDK and a reachable PostgreSQL 16 instance.
 
 ```powershell
 # 1. Set environment variables (PowerShell)
-$env:ConnectionStrings__Default = "Server=localhost,1433;Database=DevTrack;User Id=sa;Password=Your_password123;TrustServerCertificate=True;Encrypt=False"
+$env:ConnectionStrings__Default = "Host=localhost;Port=5432;Database=devtrack;Username=devtrack;Password=devtrack"
 $env:Jwt__Secret = "replace-with-a-long-random-secret-of-at-least-32-chars"
 
 # 2. Apply migrations (first run only — startup also auto-migrates by default)

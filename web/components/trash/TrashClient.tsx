@@ -26,8 +26,8 @@ export function TrashClient() {
   return (
     <div className="space-y-6">
       <PageHeader title="Çöp" description="Silinmiş projeler ve eğitimler." />
-      <Card className="border-amber-300/40 bg-amber-50/30 dark:bg-amber-950/20">
-        <CardContent className="py-3 text-sm text-amber-900 dark:text-amber-300">
+      <Card className="border-warning/40 bg-warning-soft">
+        <CardContent className="py-3 text-sm text-warning">
           ℹ️ Restore (geri yükleme) henüz yok. Geri almak istersen — yani kendine — destek bileti açabilirsin. Şaka.
           Şu an için DB&apos;de elle <code>IsDeleted=false</code> yapman gerekir.
         </CardContent>

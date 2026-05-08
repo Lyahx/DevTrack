@@ -12,7 +12,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [client] = useState(() => createQueryClient());
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+    <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem={true} themes={["light", "dark"]} disableTransitionOnChange>
       <QueryClientProvider client={client}>
         <TooltipProvider delay={200}>
           <AuthHydrator>{children}</AuthHydrator>

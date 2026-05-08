@@ -14,12 +14,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { ResourceTypeBadge, ModuleStatusBadge } from "@/components/common/StatusBadge";
+import { ResourceTypeBadge, ModuleStatusBadge, PriorityBadge } from "@/components/common/StatusBadge";
 import { TagChips } from "@/components/common/TagChips";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
 import { ideasApi } from "@/lib/api/ideas";
 import { nextStepsApi } from "@/lib/api/nextSteps";
 import { daysSinceLabel, formatDateTime, formatRelative } from "@/lib/date";
@@ -33,6 +31,7 @@ import type {
 } from "@/types/activity";
 import type { ComponentResponse } from "@/types/component";
 import type { LearningModuleResponse } from "@/types/learning";
+import { cn } from "@/lib/utils";
 
 type Header = {
   title: string;
@@ -43,6 +42,19 @@ type Header = {
   continueHref?: string;
   continueLabel?: string;
 };
+
+function SectionHeading({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <h2 className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-text-faint">
+      <span className="[&_svg]:size-3.5 text-text-faint">{icon}</span>
+      {children}
+    </h2>
+  );
+}
+
+function EmptyHint({ children }: { children: React.ReactNode }) {
+  return <p className="rounded-md border border-border-subtle bg-surface-1 px-3 py-2.5 text-[12px] text-text-faint">{children}</p>;
+}
 
 export function ResumeView({
   header,
@@ -92,24 +104,24 @@ export function ResumeView({
   }, {});
 
   return (
-    <article className="mx-auto max-w-3xl space-y-12 py-4">
+    <article className="mx-auto max-w-[720px] space-y-8 py-2">
       <header className="space-y-3">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-semibold tracking-tight">{header.title}</h1>
+          <h1 className="text-[24px] font-medium tracking-tight text-text">{header.title}</h1>
           {header.badge}
         </div>
-        {header.subtitle ? <p className="text-base text-muted-foreground">{header.subtitle}</p> : null}
-        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+        {header.subtitle ? <p className="text-[13px] text-text-secondary">{header.subtitle}</p> : null}
+        <div className="flex flex-wrap items-center gap-3 text-[12px] text-text-muted">
           <span>{daysSinceLabel(header.daysSince)}</span>
           {progressPercent !== undefined ? (
             <>
-              <Separator orientation="vertical" className="h-4" />
-              <span>İlerleme: {progressPercent}%</span>
+              <span className="text-text-faint">·</span>
+              <span>İlerleme: <span className="font-mono text-text-secondary">{progressPercent}%</span></span>
             </>
           ) : null}
           {header.tags && header.tags.length > 0 ? (
             <>
-              <Separator orientation="vertical" className="h-4" />
+              <span className="text-text-faint">·</span>
               <TagChips tags={header.tags as never[]} />
             </>
           ) : null}
@@ -118,26 +130,23 @@ export function ResumeView({
 
       {components && components.length > 0 ? (
         <section className="space-y-3">
-          <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-            <MapPin className="h-4 w-4" /> Şu an nerede kaldım
-          </h2>
+          <SectionHeading icon={<MapPin />}>Şu an nerede kaldım</SectionHeading>
           <div className="space-y-3">
             {components.map((c) => (
-              <Card key={c.id} className="bg-muted/30">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">
-                    <Link href={`/components/${c.id}`} className="hover:text-primary">{c.name}</Link>
-                    {c.techStack ? <span className="ml-2 text-xs font-normal text-muted-foreground">{c.techStack}</span> : null}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm">
-                  {c.currentStatusNote ? (
-                    <p className="whitespace-pre-wrap leading-relaxed">{c.currentStatusNote}</p>
-                  ) : (
-                    <p className="italic text-muted-foreground">Bu bileşene henüz not eklenmemiş.</p>
-                  )}
-                </CardContent>
-              </Card>
+              <div key={c.id} className="relative overflow-hidden rounded-md border border-border bg-surface-2 p-5 pl-6">
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-primary" aria-hidden />
+                <div className="mb-2 flex flex-wrap items-baseline gap-2">
+                  <Link href={`/components/${c.id}`} className="text-[14px] font-medium text-text hover:underline">
+                    {c.name}
+                  </Link>
+                  {c.techStack ? <span className="font-mono text-[11px] text-text-faint">{c.techStack}</span> : null}
+                </div>
+                {c.currentStatusNote ? (
+                  <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-text-secondary">{c.currentStatusNote}</p>
+                ) : (
+                  <p className="text-[12px] italic text-text-faint">Bu bileşene henüz not eklenmemiş.</p>
+                )}
+              </div>
             ))}
           </div>
         </section>
@@ -145,18 +154,16 @@ export function ResumeView({
 
       {modules && modules.length > 0 ? (
         <section className="space-y-3">
-          <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-            <BookOpen className="h-4 w-4" /> Modüller
-          </h2>
-          <div className="space-y-2">
+          <SectionHeading icon={<BookOpen />}>Modüller</SectionHeading>
+          <div className="space-y-1.5">
             {modules.map((m) => (
               <Link
                 key={m.id}
                 href={`/learning/${m.learningTrackId}/modules/${m.id}`}
-                className="group flex items-center gap-3 rounded-md border bg-card p-3"
+                className="group flex items-center gap-3 rounded-md border border-border-subtle bg-surface-1 p-3 transition-colors hover:bg-surface-2"
               >
-                <span className="w-6 text-xs text-muted-foreground">#{m.order}</span>
-                <span className="flex-1 group-hover:text-primary">{m.name}</span>
+                <span className="font-mono w-7 text-[11px] text-text-faint">#{m.order}</span>
+                <span className="flex-1 text-[13px] text-text-secondary group-hover:text-text">{m.name}</span>
                 <ModuleStatusBadge status={m.status} />
               </Link>
             ))}
@@ -165,25 +172,21 @@ export function ResumeView({
       ) : null}
 
       <section className="space-y-3">
-        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-          <FileText className="h-4 w-4" /> Son worklog&apos;lar
-        </h2>
+        <SectionHeading icon={<FileText />}>Son worklog&apos;lar</SectionHeading>
         {recentWorklogs.length === 0 ? (
-          <Card><CardContent className="py-4 text-sm text-muted-foreground">Henüz worklog yok.</CardContent></Card>
+          <EmptyHint>Henüz worklog yok.</EmptyHint>
         ) : (
           <ol className="space-y-3 border-l border-border pl-5">
             {recentWorklogs.map((w) => (
               <li key={w.id} className="relative">
-                <span className="absolute -left-[1.65rem] top-2 inline-block h-2.5 w-2.5 rounded-full bg-primary" />
-                <Card>
-                  <CardContent className="space-y-1 py-3">
-                    <p className="text-xs text-muted-foreground" title={formatDateTime(w.loggedAt)}>{formatRelative(w.loggedAt)}</p>
-                    <p className="whitespace-pre-wrap leading-relaxed">{w.whatIDid}</p>
-                    {w.whatsLeft ? (
-                      <p className="text-xs italic text-muted-foreground">Geriye kalan: {w.whatsLeft}</p>
-                    ) : null}
-                  </CardContent>
-                </Card>
+                <span className="absolute -left-[1.65rem] top-3 inline-block h-2 w-2 rounded-full bg-border-strong" />
+                <div className="rounded-md border border-border-subtle bg-surface-1 p-3">
+                  <p className="font-mono text-[10px] text-text-faint" title={formatDateTime(w.loggedAt)}>{formatRelative(w.loggedAt)}</p>
+                  <p className="mt-1 whitespace-pre-wrap text-[13px] leading-relaxed text-text-secondary">{w.whatIDid}</p>
+                  {w.whatsLeft ? (
+                    <p className="mt-1.5 text-[12px] italic text-text-muted">Geriye kalan: {w.whatsLeft}</p>
+                  ) : null}
+                </div>
               </li>
             ))}
           </ol>
@@ -191,48 +194,42 @@ export function ResumeView({
       </section>
 
       <section className="space-y-3">
-        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-          <CheckSquare className="h-4 w-4" /> Açık adımlar ({openNextSteps.length})
-        </h2>
+        <SectionHeading icon={<CheckSquare />}>Açık adımlar ({openNextSteps.length})</SectionHeading>
         {openNextSteps.length === 0 ? (
-          <Card><CardContent className="py-4 text-sm text-muted-foreground">Açık adım yok. Sakin.</CardContent></Card>
+          <EmptyHint>Açık adım yok.</EmptyHint>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {openNextSteps.map((s) => (
-              <Card key={s.id}>
-                <CardContent className="flex items-start gap-3 py-3">
-                  <Checkbox className="mt-0.5" onCheckedChange={() => completeStep.mutate(s.id)} />
-                  <div className="flex-1">
-                    <p>{s.description}</p>
-                    <p className="text-xs text-muted-foreground">{s.priority}</p>
-                  </div>
-                </CardContent>
-              </Card>
+              <div key={s.id} className="flex items-start gap-3 rounded-md border border-border-subtle bg-surface-1 p-3">
+                <Checkbox className="mt-0.5" onCheckedChange={() => completeStep.mutate(s.id)} />
+                <div className="flex-1">
+                  <p className="text-[13px] text-text-secondary">{s.description}</p>
+                  <div className="mt-1.5"><PriorityBadge priority={s.priority} /></div>
+                </div>
+              </div>
             ))}
           </div>
         )}
       </section>
 
       <section className="space-y-3">
-        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-          <Lightbulb className="h-4 w-4" /> Son kararlar
-        </h2>
+        <SectionHeading icon={<Lightbulb />}>Son kararlar</SectionHeading>
         {recentDecisions.length === 0 ? (
-          <Card><CardContent className="py-4 text-sm text-muted-foreground">Henüz karar yok.</CardContent></Card>
+          <EmptyHint>Henüz karar yok.</EmptyHint>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {recentDecisions.map((d) => (
-              <details key={d.id} className="group rounded-md border bg-card">
+              <details key={d.id} className="group rounded-md border border-border-subtle bg-surface-1">
                 <summary className="cursor-pointer list-none p-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{d.title}</span>
-                    <span className="text-xs text-muted-foreground">{formatRelative(d.decidedAt)}</span>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-[13px] font-medium text-text">{d.title}</span>
+                    <span className="font-mono text-[10px] text-text-faint">{formatRelative(d.decidedAt)}</span>
                   </div>
                 </summary>
-                <div className="border-t px-3 py-2 text-sm">
+                <div className="border-t border-border-subtle px-3 py-2.5 text-[13px] text-text-secondary">
                   <p className="whitespace-pre-wrap">{d.reasoning}</p>
                   {d.alternatives ? (
-                    <p className="mt-2 text-xs text-muted-foreground"><span className="font-medium">Alternatifler:</span> {d.alternatives}</p>
+                    <p className="mt-2 text-[12px] text-text-muted"><span className="font-medium text-text-secondary">Alternatifler:</span> {d.alternatives}</p>
                   ) : null}
                 </div>
               </details>
@@ -242,11 +239,9 @@ export function ResumeView({
       </section>
 
       <section className="space-y-3">
-        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-          <Link2 className="h-4 w-4" /> Kaynaklar ({resources.length})
-        </h2>
+        <SectionHeading icon={<Link2 />}>Kaynaklar ({resources.length})</SectionHeading>
         {resources.length === 0 ? (
-          <Card><CardContent className="py-4 text-sm text-muted-foreground">Henüz kaynak yok.</CardContent></Card>
+          <EmptyHint>Henüz kaynak yok.</EmptyHint>
         ) : (
           <div className="space-y-4">
             {Object.entries(groupedResources).map(([type, list]) => (
@@ -259,12 +254,12 @@ export function ResumeView({
                       href={r.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-start gap-2 rounded-md border bg-card p-3 hover:border-primary/50"
+                      className="flex items-start gap-2 rounded-md border border-border-subtle bg-surface-1 p-3 transition-colors hover:bg-surface-2"
                     >
-                      <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                      <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-text-muted" />
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">{r.title}</p>
-                        {r.notes ? <p className="line-clamp-2 text-xs text-muted-foreground">{r.notes}</p> : null}
+                        <p className="truncate text-[12px] font-medium text-text">{r.title}</p>
+                        {r.notes ? <p className="line-clamp-2 text-[11px] text-text-faint">{r.notes}</p> : null}
                       </div>
                     </a>
                   ))}
@@ -276,31 +271,27 @@ export function ResumeView({
       </section>
 
       <section className="space-y-3">
-        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-          <Sparkles className="h-4 w-4" /> Yakalanmış fikirler
-        </h2>
+        <SectionHeading icon={<Sparkles />}>Yakalanmış fikirler</SectionHeading>
         {recentIdeas.length === 0 ? (
-          <Card><CardContent className="py-4 text-sm text-muted-foreground">Açık fikir yok.</CardContent></Card>
+          <EmptyHint>Açık fikir yok.</EmptyHint>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {recentIdeas.map((i) => (
-              <Card key={i.id}>
-                <CardContent className="flex items-start justify-between gap-3 py-3">
-                  <p className="flex-1 text-sm">{i.content}</p>
-                  <Button size="xs" variant="outline" onClick={() => convertIdea.mutate(i.id)}>
-                    Adıma dönüştür <ArrowRight className="h-3 w-3" />
-                  </Button>
-                </CardContent>
-              </Card>
+              <div key={i.id} className="flex items-start justify-between gap-3 rounded-md border border-border-subtle bg-surface-1 p-3">
+                <p className="flex-1 text-[13px] text-text-secondary">{i.content}</p>
+                <Button size="xs" variant="secondary" onClick={() => convertIdea.mutate(i.id)}>
+                  Adıma dönüştür <ArrowRight className="h-3 w-3" />
+                </Button>
+              </div>
             ))}
           </div>
         )}
       </section>
 
       {header.continueHref ? (
-        <div className="pt-4 text-center">
-          <Link href={header.continueHref} className="text-sm text-primary hover:underline">
-            {header.continueLabel ?? "Bu projeye devam et"} →
+        <div className="pt-2">
+          <Link href={header.continueHref} className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full justify-center")}>
+            {header.continueLabel ?? "Bu projeye devam et"} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       ) : null}

@@ -84,10 +84,10 @@ export function LearningTracksList() {
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((t) => (
             <Link key={t.id} href={`/learning/${t.id}`} className="group">
-              <Card className={`h-full transition-colors group-hover:border-primary/50 ${t.isDeleted ? "opacity-60" : ""}`}>
+              <Card className={`h-full transition-all hover:border-border hover:shadow-card hover:-translate-y-px ${t.isDeleted ? "opacity-60" : ""}`}>
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-base font-semibold group-hover:text-primary">{t.name}</CardTitle>
+                    <CardTitle className="text-base font-semibold">{t.name}</CardTitle>
                     <ProjectStatusBadge status={t.status} />
                   </div>
                   {t.source ? <p className="text-xs text-muted-foreground">{t.source}</p> : null}

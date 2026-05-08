@@ -109,7 +109,7 @@ export default function LoginPage() {
           </CardContent>
           <CardFooter className="justify-center text-sm text-muted-foreground">
             Hesabın yok mu?
-            <Link href="/register" className="ml-1 text-primary underline-offset-4 hover:underline">
+            <Link href="/register" className="ml-1 text-text underline underline-offset-4 hover:text-text-secondary">
               Kayıt ol
             </Link>
           </CardFooter>

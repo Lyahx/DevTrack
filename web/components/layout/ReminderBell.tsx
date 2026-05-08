@@ -27,7 +27,7 @@ export function ReminderBell() {
     >
       <Bell className="h-4 w-4" />
       {count > 0 ? (
-        <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white">
+        <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-warning px-1 text-[9px] font-semibold text-white">
           {count > 9 ? "9+" : count}
         </span>
       ) : null}

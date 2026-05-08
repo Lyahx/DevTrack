@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PriorityBadge } from "@/components/common/StatusBadge";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -51,7 +50,7 @@ function scopeHeader(scope: PanelScope): string {
 
 function scopeEmpty(scope: PanelScope): string {
   return scope.kind === "global"
-    ? "Açık adım yok. Temiz bir tahta."
+    ? "Açık adım yok."
     : "Bu kapsamda açık adım yok.";
 }
 
@@ -121,36 +120,34 @@ export function DetailPanel() {
 
   if (collapsed) {
     return (
-      <aside className="hidden w-8 shrink-0 border-l bg-sidebar xl:flex xl:flex-col">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="m-1"
+      <aside className="hidden w-8 shrink-0 border-l border-border bg-surface-1 xl:flex xl:flex-col">
+        <button
+          type="button"
           onClick={() => setCollapsed(false)}
           aria-label="Detay panelini aç"
+          className="m-1 flex h-6 w-6 items-center justify-center rounded text-text-muted hover:bg-surface-2 hover:text-text"
         >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
+          <ChevronLeft className="h-3.5 w-3.5" />
+        </button>
       </aside>
     );
   }
 
   return (
-    <aside className="hidden w-80 shrink-0 border-l bg-sidebar xl:flex xl:flex-col">
-      <div className="flex items-center justify-between border-b px-4 py-2.5">
-        <h3 className="text-sm font-semibold">{scopeHeader(scope)}</h3>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7"
+    <aside className="hidden w-80 shrink-0 border-l border-border bg-surface-1 xl:flex xl:flex-col">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+        <h3 className="text-[10px] font-semibold uppercase tracking-wider text-text-faint">{scopeHeader(scope)}</h3>
+        <button
+          type="button"
           onClick={() => setCollapsed(true)}
           aria-label="Detay panelini kapat"
+          className="flex h-6 w-6 items-center justify-center rounded text-text-muted hover:bg-surface-2 hover:text-text"
         >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+          <ChevronRight className="h-3.5 w-3.5" />
+        </button>
       </div>
       <ScrollArea className="flex-1">
-        <div className="space-y-2 p-3">
+        <div className="space-y-1.5 p-4">
           {list.isLoading ? (
             <div className="space-y-2">
               <Skeleton className="h-12 w-full" />
@@ -158,22 +155,20 @@ export function DetailPanel() {
               <Skeleton className="h-12 w-full" />
             </div>
           ) : !items.length ? (
-            <div className="rounded-lg border border-dashed bg-card/50 px-4 py-8 text-center">
-              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                <Check className="h-5 w-5" />
-              </div>
-              <p className="text-sm text-muted-foreground">{scopeEmpty(scope)}</p>
+            <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
+              <Check className="h-5 w-5 text-text-faint" />
+              <p className="text-[12px] text-text-muted">{scopeEmpty(scope)}</p>
             </div>
           ) : (
             items.slice(0, 12).map((s) => (
-              <div key={s.id} className="flex items-start gap-2 rounded-md border bg-card p-2">
+              <div key={s.id} className="flex items-start gap-2 rounded-md border border-border-subtle bg-surface-1 p-2.5 transition-colors hover:bg-surface-2">
                 <Checkbox
                   checked={false}
                   className="mt-0.5"
                   onCheckedChange={() => completeMutation.mutate(s.id)}
                 />
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <span className="line-clamp-2 text-sm">{s.description}</span>
+                  <span className="line-clamp-2 text-[12px] text-text-secondary">{s.description}</span>
                   <PriorityBadge priority={s.priority} />
                 </div>
               </div>

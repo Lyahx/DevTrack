@@ -21,7 +21,7 @@ export function Field({
     <div className={cn("space-y-1.5", className)}>
       <Label className="text-sm">
         {label}
-        {required ? <span className="ml-0.5 text-rose-600">*</span> : null}
+        {required ? <span className="ml-0.5 text-warning">*</span> : null}
       </Label>
       {children}
       {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}

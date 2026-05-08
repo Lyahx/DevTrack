@@ -104,12 +104,12 @@ export function RemindersClient() {
                 <p className="text-sm">{r.message}</p>
                 <div className="flex items-center gap-2">
                   {r.relatedProjectId ? (
-                    <Link href={`/projects/${r.relatedProjectId}/resume`} className="text-xs text-primary hover:underline">
+                    <Link href={`/projects/${r.relatedProjectId}/resume`} className="text-xs text-text-secondary underline-offset-2 hover:text-text hover:underline">
                       Projeye git →
                     </Link>
                   ) : null}
                   {r.relatedLearningTrackId ? (
-                    <Link href={`/learning/${r.relatedLearningTrackId}/resume`} className="text-xs text-primary hover:underline">
+                    <Link href={`/learning/${r.relatedLearningTrackId}/resume`} className="text-xs text-text-secondary underline-offset-2 hover:text-text hover:underline">
                       Eğitime git →
                     </Link>
                   ) : null}

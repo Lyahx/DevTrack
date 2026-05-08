@@ -5,10 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { OwnerPicker } from "@/components/common/OwnerPicker";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { decisionsApi } from "@/lib/api/decisions";
 import { ideasApi } from "@/lib/api/ideas";
 import { nextStepsApi } from "@/lib/api/nextSteps";
@@ -16,15 +13,18 @@ import { worklogsApi } from "@/lib/api/worklogs";
 import { errorMessage } from "@/lib/error";
 import { useQuickCaptureStore } from "@/store/quickCapture";
 import type { OwnerReference } from "@/types/owner";
+import { cn } from "@/lib/utils";
 
 type CaptureType = "Idea" | "NextStep" | "Worklog" | "Decision";
 
 const TYPE_LABELS: Record<CaptureType, string> = {
   Idea: "Fikir",
-  NextStep: "Sonraki adım",
+  NextStep: "Adım",
   Worklog: "Worklog",
   Decision: "Karar",
 };
+
+const TYPES: CaptureType[] = ["Idea", "NextStep", "Worklog", "Decision"];
 
 export function QuickCaptureModal() {
   const open = useQuickCaptureStore((s) => s.open);
@@ -77,55 +77,53 @@ export function QuickCaptureModal() {
 
   return (
     <Dialog open={open} onOpenChange={(v) => (v ? null : close())}>
-      <DialogContent className="max-w-xl">
-        <DialogHeader>
+      <DialogContent className="gap-3 p-5 sm:max-w-[540px]">
+        <DialogHeader className="sr-only">
           <DialogTitle>Hızlı yakala</DialogTitle>
-          <DialogDescription>İçeriği yaz, türü seç, sahibi belirle. Ctrl/⌘+Enter ile gönder.</DialogDescription>
+          <DialogDescription>İçeriği yaz, türü seç, sahibi belirle.</DialogDescription>
         </DialogHeader>
-        <div className="space-y-3">
-          <Textarea
-            ref={textareaRef}
-            placeholder="Bir fikir, bir not, bir sonraki adım…"
-            rows={4}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            onKeyDown={(e) => {
-              if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-                e.preventDefault();
-                submit.mutate();
-              }
-            }}
-          />
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Sahip</Label>
-              <OwnerPicker value={owner} onChange={setOwner} />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Tür</Label>
-              <RadioGroup
-                value={type}
-                onValueChange={(v) => setType(v as CaptureType)}
-                className="flex flex-wrap gap-3"
-              >
-                {(["Idea", "NextStep", "Worklog", "Decision"] as CaptureType[]).map((t) => (
-                  <div key={t} className="flex items-center gap-1.5">
-                    <RadioGroupItem id={`qc-${t}`} value={t} />
-                    <Label htmlFor={`qc-${t}`} className="cursor-pointer text-sm">
-                      {TYPE_LABELS[t]}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
+        <textarea
+          ref={textareaRef}
+          placeholder="Bir fikir, bir not, bir sonraki adım…"
+          rows={3}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          onKeyDown={(e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+              e.preventDefault();
+              submit.mutate();
+            }
+          }}
+          className="w-full resize-none border-0 bg-transparent text-[16px] leading-relaxed text-text outline-none placeholder:text-text-faint"
+        />
+
+        <div className="flex items-center gap-2">
+          {TYPES.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setType(t)}
+              className={cn(
+                "rounded-md px-2 py-1 text-[11px] font-medium tracking-tight transition-colors",
+                type === t
+                  ? "bg-surface-3 text-text"
+                  : "text-text-muted hover:bg-surface-2 hover:text-text-secondary",
+              )}
+            >
+              {TYPE_LABELS[t]}
+            </button>
+          ))}
+          <div className="ml-auto">
+            <OwnerPicker value={owner} onChange={setOwner} />
           </div>
         </div>
-        <DialogFooter>
-          <Button variant="ghost" onClick={close}>Kapat</Button>
+
+        <div className="flex items-center justify-between border-t border-border-subtle pt-3">
+          <span className="font-mono text-[10px] text-text-faint">⌘↵ kaydet · ESC kapat</span>
           <Button onClick={() => submit.mutate()} disabled={submit.isPending}>
             {submit.isPending ? "Kaydediliyor…" : "Yakala"}
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

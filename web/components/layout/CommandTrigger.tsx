@@ -1,22 +1,21 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useCommandPaletteStore } from "@/store/commandPalette";
 
 export function CommandTrigger() {
   const setOpen = useCommandPaletteStore((s) => s.setOpen);
   return (
-    <Button
-      variant="outline"
+    <button
+      type="button"
       onClick={() => setOpen(true)}
-      className="hidden h-9 w-full max-w-md justify-start gap-2 px-3 text-muted-foreground md:inline-flex"
+      className="hidden h-7 w-full max-w-[320px] items-center gap-2 rounded-md border border-border bg-surface-2 px-2.5 text-[12px] text-text-muted transition-colors hover:border-border-strong md:inline-flex"
     >
-      <Search className="h-4 w-4" />
-      <span className="text-sm">Ara veya git…</span>
-      <kbd className="ml-auto pointer-events-none hidden select-none rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] font-medium text-muted-foreground sm:inline-block">
-        Ctrl K
+      <Search className="h-3.5 w-3.5" />
+      <span>Ara veya git…</span>
+      <kbd className="ml-auto pointer-events-none select-none font-mono text-[10px] text-text-faint">
+        ⌘K
       </kbd>
-    </Button>
+    </button>
   );
 }

@@ -11,58 +11,60 @@ import type {
   ProjectStatus,
   ResourceType,
 } from "@/types/enums";
+import { cn } from "@/lib/utils";
 
-const projectStatusClass: Record<ProjectStatus, string> = {
-  Active: "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:ring-emerald-800/60",
-  Paused: "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300",
-  Completed: "bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-300",
-  Abandoned: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800/40 dark:text-zinc-500",
+const projectClass: Record<ProjectStatus, { dot: string; bg: string }> = {
+  Active: { dot: "bg-success", bg: "bg-success-soft text-success" },
+  Paused: { dot: "bg-text-muted", bg: "bg-surface-3 text-text-muted" },
+  Completed: { dot: "bg-info", bg: "bg-info-soft text-info" },
+  Abandoned: { dot: "bg-warning", bg: "bg-surface-3 text-text-faint" },
 };
 
 export function ProjectStatusBadge({ status }: { status: ProjectStatus }) {
-  return <Badge className={projectStatusClass[status]} variant="secondary">{PROJECT_STATUS_LABELS[status]}</Badge>;
+  const c = projectClass[status];
+  return (
+    <span className={cn("inline-flex w-fit items-center gap-1.5 self-start rounded-md px-1.5 py-0.5 text-[11px] font-medium", c.bg)}>
+      <span className={cn("status-dot", c.dot)} aria-hidden />
+      {PROJECT_STATUS_LABELS[status]}
+    </span>
+  );
 }
 
 export function ProjectStatusDot({ status }: { status: ProjectStatus }) {
-  const cls: Record<ProjectStatus, string> = {
-    Active: "bg-emerald-500 ring-2 ring-emerald-500/30",
-    Paused: "bg-amber-500",
-    Completed: "bg-sky-500",
-    Abandoned: "bg-zinc-400",
-  };
-  return <span className={`inline-block h-2 w-2 rounded-full ${cls[status]}`} aria-hidden />;
+  return <span className={cn("status-dot", projectClass[status].dot)} aria-hidden />;
 }
 
+// Priority — High is intentionally filled to dominate.
 const priorityClass: Record<NextStepPriority, string> = {
-  Low: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800/50 dark:text-zinc-400",
-  Medium: "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300",
-  High: "bg-rose-500 text-white ring-1 ring-rose-600 dark:bg-rose-600 dark:text-rose-50 dark:ring-rose-500",
+  Low: "bg-surface-3 text-text-muted",
+  Medium: "bg-info-soft text-info ring-1 ring-info/20",
+  High: "bg-warning text-white shadow-soft",
 };
 
 export function PriorityBadge({ priority }: { priority: NextStepPriority }) {
-  return <Badge className={priorityClass[priority]} variant="secondary">{PRIORITY_LABELS[priority]}</Badge>;
+  return (
+    <span className={cn("inline-flex w-fit items-center self-start rounded-md px-2 py-0.5 text-[11px] font-medium tracking-tight", priorityClass[priority])}>
+      {PRIORITY_LABELS[priority]}
+    </span>
+  );
 }
 
-const moduleStatusClass: Record<LearningModuleStatus, string> = {
-  NotStarted: "bg-zinc-100 text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-300",
-  InProgress: "bg-blue-100 text-blue-900 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300",
-  Completed: "bg-emerald-100 text-emerald-800 hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300",
+const moduleClass: Record<LearningModuleStatus, { dot: string; bg: string }> = {
+  NotStarted: { dot: "bg-text-muted", bg: "bg-surface-3 text-text-muted" },
+  InProgress: { dot: "bg-info", bg: "bg-info-soft text-info" },
+  Completed: { dot: "bg-success", bg: "bg-success-soft text-success" },
 };
 
 export function ModuleStatusBadge({ status }: { status: LearningModuleStatus }) {
-  return <Badge className={moduleStatusClass[status]} variant="secondary">{MODULE_STATUS_LABELS[status]}</Badge>;
+  const c = moduleClass[status];
+  return (
+    <span className={cn("inline-flex w-fit items-center gap-1.5 self-start rounded-md px-1.5 py-0.5 text-[11px] font-medium", c.bg)}>
+      <span className={cn("status-dot", c.dot)} aria-hidden />
+      {MODULE_STATUS_LABELS[status]}
+    </span>
+  );
 }
 
-const resourceTypeClass: Record<ResourceType, string> = {
-  ClaudeChat: "bg-orange-100 text-orange-900 hover:bg-orange-100 dark:bg-orange-950 dark:text-orange-300",
-  Documentation: "bg-blue-100 text-blue-900 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300",
-  Article: "bg-violet-100 text-violet-900 hover:bg-violet-100 dark:bg-violet-950 dark:text-violet-300",
-  Video: "bg-rose-100 text-rose-900 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300",
-  StackOverflow: "bg-amber-100 text-amber-900 hover:bg-amber-100 dark:bg-amber-950 dark:text-amber-300",
-  GitHub: "bg-zinc-200 text-zinc-800 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200",
-  Other: "bg-zinc-100 text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-300",
-};
-
 export function ResourceTypeBadge({ type }: { type: ResourceType }) {
-  return <Badge className={resourceTypeClass[type]} variant="secondary">{RESOURCE_TYPE_LABELS[type]}</Badge>;
+  return <Badge variant="default">{RESOURCE_TYPE_LABELS[type]}</Badge>;
 }

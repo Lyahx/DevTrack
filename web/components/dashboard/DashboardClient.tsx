@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Bell, BookOpen, CheckCircle2, FileText, FolderKanban, Plus, Sparkles, ZapOff } from "lucide-react";
+import { ArrowRight, Bell, BookOpen, ChevronRight, FolderKanban, Plus, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -11,7 +11,6 @@ import { PageHeader } from "@/components/common/PageHeader";
 import { ProjectStatusBadge } from "@/components/common/StatusBadge";
 import { TagChips } from "@/components/common/TagChips";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectFormModal } from "@/components/projects/ProjectFormModal";
@@ -26,6 +25,7 @@ export function DashboardClient() {
   const user = useAuthStore((s) => s.user);
   const qc = useQueryClient();
   const [createOpen, setCreateOpen] = useState(false);
+  const [staleExpanded, setStaleExpanded] = useState(false);
 
   const dash = useQuery({
     queryKey: ["dashboard"],
@@ -52,10 +52,9 @@ export function DashboardClient() {
   if (dash.isLoading) {
     return (
       <div className="space-y-6">
-        <Skeleton className="h-10 w-64" />
-        <Skeleton className="h-40 w-full" />
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {[0, 1, 2].map((i) => <Skeleton key={i} className="h-32" />)}
+        <Skeleton className="h-8 w-64" />
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {[0, 1, 2].map((i) => <Skeleton key={i} className="h-28" />)}
         </div>
       </div>
     );
@@ -65,10 +64,10 @@ export function DashboardClient() {
   if (!d) return null;
 
   const hero = d.activeProjects[0];
-  const otherActiveProjects = d.activeProjects.slice(1);
+  const otherProjects = d.activeProjects.slice(1);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       <PageHeader
         title={`Hoş geldin, ${user?.username ?? ""}`}
         description="Bugün nereden devam edelim?"
@@ -80,55 +79,68 @@ export function DashboardClient() {
       />
 
       {d.staleProjects.length > 0 && (
-        <Card className="border-amber-300/60 bg-amber-50/50 dark:border-amber-900/60 dark:bg-amber-950/30">
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-amber-900 dark:text-amber-300">
-              <ZapOff className="h-4 w-4" />
-              {d.staleProjects.length} proje 14+ gündür duruyor
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {d.staleProjects.slice(0, 5).map((p) => (
-              <div key={p.id} className="flex items-center justify-between gap-3 rounded-md bg-background/60 p-2">
-                <div className="flex min-w-0 flex-1 items-center gap-2">
-                  <ProjectStatusBadge status={p.status} />
-                  <span className="truncate font-medium">{p.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {p.lastActivityAt ? formatRelative(p.lastActivityAt) : "Hiç dokunulmadı"}
-                  </span>
-                </div>
-                <Link href={`/projects/${p.id}/resume`} className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
-                  Devam et <ArrowRight className="h-3 w-3" />
+        <div className="overflow-hidden rounded-md border border-border-subtle bg-surface-2">
+          <button
+            type="button"
+            onClick={() => setStaleExpanded((v) => !v)}
+            className="flex w-full items-center gap-3 border-l-2 border-warning px-4 py-3 text-left transition-colors hover:bg-surface-3"
+          >
+            <span className="flex-1 text-[13px] text-text-secondary">
+              <span className="font-medium text-text">{d.staleProjects.length} projeye</span> 14+ gündür dokunmadın.
+            </span>
+            <ChevronRight className={`h-4 w-4 text-text-muted transition-transform ${staleExpanded ? "rotate-90" : ""}`} />
+          </button>
+          {staleExpanded && (
+            <div className="space-y-1 border-t border-border-subtle p-2">
+              {d.staleProjects.slice(0, 8).map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/projects/${p.id}/resume`}
+                  className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 hover:bg-surface-3"
+                >
+                  <div className="flex min-w-0 flex-1 items-center gap-3">
+                    <ProjectStatusBadge status={p.status} />
+                    <span className="truncate text-[13px] text-text-secondary">{p.name}</span>
+                    <span className="font-mono text-[10px] text-text-faint">
+                      {p.lastActivityAt ? formatRelative(p.lastActivityAt) : "Hiç dokunulmadı"}
+                    </span>
+                  </div>
+                  <ChevronRight className="h-3.5 w-3.5 text-text-faint" />
                 </Link>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
       {hero ? (
-        <section>
-          <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary/80">
-            <Sparkles className="h-3.5 w-3.5" /> Şimdi nereye dönelim
+        <section className="space-y-2">
+          <div className="flex items-center gap-2 px-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+            <Sparkles className="h-3 w-3" /> Şimdi nereye dönelim
           </div>
-          <Card className="relative overflow-hidden border-primary/30 bg-gradient-to-br from-primary/5 via-card to-card shadow-sm ring-1 ring-primary/10">
-            <CardHeader className="pb-3">
+          <Link
+            href={`/projects/${hero.id}/resume`}
+            className="group block overflow-hidden rounded-lg border border-border bg-gradient-to-br from-primary/10 via-surface-1 to-surface-1 p-5 shadow-card ring-1 ring-primary/20 transition-all hover:ring-primary/40"
+          >
+            <div className="flex flex-col gap-3">
               <div className="flex items-start justify-between gap-3">
-                <CardTitle className="text-2xl font-semibold tracking-tight">{hero.name}</CardTitle>
+                <div className="space-y-1.5">
+                  <h2 className="text-[20px] font-medium leading-tight tracking-tight text-text">{hero.name}</h2>
+                  {hero.goal ? <p className="line-clamp-2 max-w-2xl text-[13px] text-text-secondary">{hero.goal}</p> : null}
+                </div>
                 <ProjectStatusBadge status={hero.status} />
               </div>
-              {hero.goal ? <p className="line-clamp-2 text-sm text-muted-foreground">{hero.goal}</p> : null}
-            </CardHeader>
-            <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-0">
-              <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                <span>Son hareket: {formatRelative(hero.lastActivityAt ?? hero.createdAt)}</span>
-                {hero.tags.length > 0 ? <TagChips tags={hero.tags} /> : null}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                <div className="flex flex-wrap items-center gap-3 text-[12px] text-text-muted">
+                  <span>Son hareket <span className="font-mono text-text-secondary">{formatRelative(hero.lastActivityAt ?? hero.createdAt)}</span></span>
+                  {hero.tags.length > 0 ? <TagChips tags={hero.tags} max={4} /> : null}
+                </div>
+                <span className={cn(buttonVariants({ variant: "default", size: "sm" }), "transition-transform group-hover:translate-x-0.5")}>
+                  Resume Mode <ArrowRight className="h-3.5 w-3.5" />
+                </span>
               </div>
-              <Link href={`/projects/${hero.id}/resume`} className={cn(buttonVariants())}>
-                Resume Mode <ArrowRight className="h-4 w-4" />
-              </Link>
-            </CardContent>
-          </Card>
+            </div>
+          </Link>
         </section>
       ) : (
         <EmptyState
@@ -139,82 +151,72 @@ export function DashboardClient() {
         />
       )}
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {otherActiveProjects.length > 0 && (
-          <section>
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Diğer aktif projeler</h2>
-              <Link href="/projects" className="text-xs text-muted-foreground hover:text-foreground">Tümünü gör →</Link>
-            </div>
-            <div className="space-y-2">
-              {otherActiveProjects.slice(0, 4).map((p) => (
-                <Link key={p.id} href={`/projects/${p.id}/resume`} className="group block">
-                  <Card className="border-border/60 transition-all hover:border-primary/40 hover:shadow-sm">
-                    <CardContent className="flex items-center justify-between gap-3 p-3">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="truncate text-sm font-medium group-hover:text-primary">{p.name}</span>
-                          <ProjectStatusBadge status={p.status} />
-                        </div>
-                        <p className="mt-0.5 text-xs text-muted-foreground">{formatRelative(p.lastActivityAt ?? p.createdAt)}</p>
-                      </div>
-                      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section className={otherActiveProjects.length === 0 ? "lg:col-span-2" : ""}>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Aktif eğitimler</h2>
-            <Link href="/learning" className="text-xs text-muted-foreground hover:text-foreground">Tümünü gör →</Link>
+      {otherProjects.length > 0 && (
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-faint">Diğer aktif projeler</h2>
+            <Link href="/projects" className="text-[11px] text-text-faint hover:text-text-secondary">Tümünü gör →</Link>
           </div>
-          {d.activeLearningTracks.length === 0 ? (
-            <EmptyState icon={<BookOpen className="h-6 w-6" />} title="Henüz aktif eğitim yok." description="Bir Claude eğitimi mi başladın? Burada takip et." />
-          ) : (
-            <div className="space-y-2">
-              {d.activeLearningTracks.slice(0, 4).map((t) => (
-                <Link key={t.id} href={`/learning/${t.id}/resume`} className="group block">
-                  <Card className="border-border/60 transition-all hover:border-primary/40 hover:shadow-sm">
-                    <CardContent className="flex items-center justify-between gap-3 p-3">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="truncate text-sm font-medium group-hover:text-primary">{t.name}</span>
-                          <ProjectStatusBadge status={t.status} />
-                        </div>
-                        {t.source ? <p className="mt-0.5 text-xs text-muted-foreground">{t.source}</p> : null}
-                      </div>
-                      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
+            {otherProjects.slice(0, 6).map((p) => (
+              <Link key={p.id} href={`/projects/${p.id}/resume`} className="group block">
+                <div className="flex h-full flex-col gap-2 rounded-md border border-border-subtle bg-surface-1 p-4 shadow-soft transition-all hover:bg-surface-2 hover:border-border hover:shadow-card hover:-translate-y-px">
+                  <div className="flex items-start justify-between gap-2">
+                    <ProjectStatusBadge status={p.status} />
+                    <span className="font-mono text-[10px] text-text-faint">{formatRelative(p.lastActivityAt ?? p.createdAt)}</span>
+                  </div>
+                  <p className="text-[14px] font-medium text-text">{p.name}</p>
+                  {p.goal ? <p className="line-clamp-2 text-[12px] text-text-muted">{p.goal}</p> : null}
+                  {p.tags.length > 0 ? <TagChips tags={p.tags} max={3} /> : null}
+                </div>
+              </Link>
+            ))}
+          </div>
         </section>
-      </div>
+      )}
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Yüksek öncelikli adımlar</h2>
-            <span className="text-xs text-muted-foreground">{d.openNextStepsCount} açık</span>
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-faint">Aktif eğitimler</h2>
+          <Link href="/learning" className="text-[11px] text-text-faint hover:text-text-secondary">Tümünü gör →</Link>
+        </div>
+        {d.activeLearningTracks.length === 0 ? (
+          <EmptyState icon={<BookOpen className="h-6 w-6" />} title="Henüz aktif eğitim yok." description="Bir Claude eğitimi mi başladın? Burada takip et." />
+        ) : (
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
+            {d.activeLearningTracks.slice(0, 6).map((t) => (
+              <Link key={t.id} href={`/learning/${t.id}/resume`} className="group block">
+                <div className="flex h-full flex-col gap-2 rounded-md border border-border-subtle bg-surface-1 p-4 shadow-soft transition-all hover:bg-surface-2 hover:border-border hover:shadow-card hover:-translate-y-px">
+                  <div className="flex items-start justify-between gap-2">
+                    <ProjectStatusBadge status={t.status} />
+                    <span className="font-mono text-[10px] text-text-faint">{formatRelative(t.lastActivityAt ?? t.createdAt)}</span>
+                  </div>
+                  <p className="text-[14px] font-medium text-text">{t.name}</p>
+                  {t.source ? <p className="font-mono text-[11px] text-text-faint">{t.source}</p> : null}
+                  {t.tags.length > 0 ? <TagChips tags={t.tags} max={3} /> : null}
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-faint">Yüksek öncelikli adımlar</h2>
+            <span className="font-mono text-[10px] text-text-faint">{d.openNextStepsCount} açık</span>
           </div>
           {d.highPriorityOpenNextSteps.length === 0 ? (
-            <EmptyState icon={<CheckCircle2 className="h-6 w-6" />} title="Yüksek öncelikli açık adım yok." description="Sakin." />
+            <p className="rounded-md border border-border-subtle bg-surface-1 px-3 py-2.5 text-[12px] text-text-faint">Sakin. Açık high-priority adım yok.</p>
           ) : (
             <div className="space-y-1.5">
               {d.highPriorityOpenNextSteps.map((s) => (
-                <div key={s.id} className="flex items-start gap-3 rounded-md border border-border/50 bg-card/50 p-3 transition-colors hover:bg-card">
+                <div key={s.id} className="flex items-start gap-3 rounded-md border border-border-subtle bg-surface-1 p-3 transition-colors hover:bg-surface-2">
                   <Checkbox className="mt-0.5" onCheckedChange={() => completeStep.mutate(s.id)} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm">{s.description}</p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <OwnerBadge owner={s.owner} />
-                    </div>
+                    <p className="text-[13px] text-text-secondary">{s.description}</p>
+                    <div className="mt-1"><OwnerBadge owner={s.owner} /></div>
                   </div>
                 </div>
               ))}
@@ -222,23 +224,21 @@ export function DashboardClient() {
           )}
         </section>
 
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Son worklog&apos;lar</h2>
-          </div>
+        <section className="space-y-3">
+          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-faint">Son worklog&apos;lar</h2>
           {d.recentWorklogs.length === 0 ? (
-            <EmptyState icon={<FileText className="h-6 w-6" />} title="Henüz worklog yok." description="Bir şeye dokunduğunda buraya yansır." />
+            <p className="rounded-md border border-border-subtle bg-surface-1 px-3 py-2.5 text-[12px] text-text-faint">Henüz worklog yok.</p>
           ) : (
             <ol className="space-y-2.5 border-l border-border pl-4">
               {d.recentWorklogs.map((w) => (
                 <li key={w.id} className="relative">
-                  <span className="absolute -left-[1.4rem] top-2.5 inline-block h-2 w-2 rounded-full bg-primary/70" />
-                  <div className="rounded-md border border-border/40 bg-card/50 p-3">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>{formatRelative(w.loggedAt)}</span>
+                  <span className="absolute -left-[1.4rem] top-2.5 inline-block h-2 w-2 rounded-full bg-border-strong" />
+                  <div className="rounded-md border border-border-subtle bg-surface-1 p-3">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-[10px] text-text-faint">{formatRelative(w.loggedAt)}</span>
                       <OwnerBadge owner={w.owner} />
                     </div>
-                    <p className="mt-1 line-clamp-3 text-sm">{w.whatIDid}</p>
+                    <p className="mt-1 line-clamp-3 text-[13px] text-text-secondary">{w.whatIDid}</p>
                   </div>
                 </li>
               ))}
@@ -248,18 +248,18 @@ export function DashboardClient() {
       </div>
 
       {d.unreadReminders.length > 0 && (
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              <Bell className="h-3.5 w-3.5" /> Okunmamış hatırlatmalar
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-text-faint">
+              <Bell className="h-3 w-3" /> Okunmamış hatırlatmalar
             </h2>
-            <Link href="/reminders" className="text-xs text-muted-foreground hover:text-foreground">Tümünü gör →</Link>
+            <Link href="/reminders" className="text-[11px] text-text-faint hover:text-text-secondary">Tümünü gör →</Link>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {d.unreadReminders.slice(0, 3).map((r) => (
-              <div key={r.id} className="rounded-md border border-amber-300/40 bg-amber-50/30 p-3 dark:border-amber-900/40 dark:bg-amber-950/20">
-                <p className="text-sm font-medium">{r.title}</p>
-                <p className="text-sm text-muted-foreground">{r.message}</p>
+              <div key={r.id} className="rounded-md border border-border-subtle border-l-2 border-l-warning bg-surface-1 p-3">
+                <p className="text-[13px] font-medium text-text">{r.title}</p>
+                <p className="mt-0.5 text-[12px] text-text-muted">{r.message}</p>
               </div>
             ))}
           </div>

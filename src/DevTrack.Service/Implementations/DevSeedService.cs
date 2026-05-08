@@ -53,7 +53,7 @@ public class DevSeedService : IDevSeedService
             ProjectId = aos.Id,
             Name = "AOS.Api",
             Type = ComponentType.Api,
-            TechStack = ".NET 10, EF Core, MSSQL",
+            TechStack = ".NET 10, EF Core, PostgreSQL",
             LocalUrl = "http://localhost:5050",
             RepoPath = "src/AOS.Api",
             CurrentStatusNote = "Refresh token endpoint'ini eklemeye başladım. Validator yarıda kaldı — özellikle `RefreshTokenRequest` için MaxLength sınırını netleştirmem lazım. Yarın access token rotation'ı tamamla.",
