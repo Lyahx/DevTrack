@@ -1,7 +1,6 @@
 using AutoMapper;
 using DevTrack.Domain.Common;
 using DevTrack.Domain.DTOs.Components;
-using DevTrack.Domain.DTOs.Decisions;
 using DevTrack.Domain.DTOs.Ideas;
 using DevTrack.Domain.DTOs.LearningTracks;
 using DevTrack.Domain.DTOs.NextSteps;
@@ -42,10 +41,6 @@ public class MappingProfile : Profile
         CreateMap<TagUpdateRequest, Tag>();
 
         CreateMap<Worklog, WorklogResponse>()
-            .ForMember(d => d.Owner, o => o.MapFrom(s =>
-                OwnerReference.FromColumns(s.ProjectId, s.ComponentId, s.LearningTrackId, s.LearningModuleId)));
-
-        CreateMap<Decision, DecisionResponse>()
             .ForMember(d => d.Owner, o => o.MapFrom(s =>
                 OwnerReference.FromColumns(s.ProjectId, s.ComponentId, s.LearningTrackId, s.LearningModuleId)));
 

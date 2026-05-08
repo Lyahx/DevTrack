@@ -88,8 +88,7 @@ function QuickCaptureMock() {
           {[
             { l: "Fikir", a: false },
             { l: "Adım", a: false },
-            { l: "Worklog", a: false },
-            { l: "Karar", a: true },
+            { l: "Worklog", a: true },
           ].map((t) => (
             <span
               key={t.l}
@@ -321,14 +320,13 @@ export default function WelcomePage() {
                   <span className="text-text-secondary">Yaz, gönder, devam et.</span>
                 </h2>
                 <p className="mt-4 text-[14px] leading-relaxed text-text-muted">
-                  Bir fikir, bir worklog, bir karar — ⌘J ile pop-up açılır, yazıp ⌘↵ ile gönderirsin. Türünü ve sahibini bir tıkla seç. Akış kesilmesin.
+                  Bir fikir, bir worklog, bir adım — ⌘J ile pop-up açılır, yazıp ⌘↵ ile gönderirsin. Türünü ve sahibini bir tıkla seç. Akış kesilmesin.
                 </p>
-                <div className="mt-6 grid grid-cols-2 gap-2 text-[12px]">
+                <div className="mt-6 grid grid-cols-3 gap-2 text-[12px]">
                   {[
                     { icon: Lightbulb, label: "Fikir" },
                     { icon: CheckSquare, label: "Sonraki adım" },
                     { icon: FolderKanban, label: "Worklog" },
-                    { icon: BookOpen, label: "Karar" },
                   ].map((t) => (
                     <div key={t.label} className="flex items-center gap-2 rounded-md border border-border-subtle bg-surface-1 px-3 py-2 text-text-secondary">
                       <t.icon className="h-3.5 w-3.5 text-text-muted" /> {t.label}

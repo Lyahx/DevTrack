@@ -7,6 +7,8 @@ public class WorklogCreateRequest
     public OwnerReference Owner { get; set; } = null!;
     public string WhatIDid { get; set; } = string.Empty;
     public string? WhatsLeft { get; set; }
+    public string? Reasoning { get; set; }
+    public string? Alternatives { get; set; }
     public DateTime? LoggedAt { get; set; }
 }
 
@@ -14,6 +16,8 @@ public class WorklogUpdateRequest
 {
     public string WhatIDid { get; set; } = string.Empty;
     public string? WhatsLeft { get; set; }
+    public string? Reasoning { get; set; }
+    public string? Alternatives { get; set; }
     public DateTime? LoggedAt { get; set; }
 }
 
@@ -24,6 +28,8 @@ public class WorklogResponse
     public OwnerReference Owner { get; set; } = null!;
     public string WhatIDid { get; set; } = string.Empty;
     public string? WhatsLeft { get; set; }
+    public string? Reasoning { get; set; }
+    public string? Alternatives { get; set; }
     public DateTime LoggedAt { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

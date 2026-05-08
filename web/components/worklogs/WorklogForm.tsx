@@ -17,6 +17,8 @@ import type { WorklogResponse } from "@/types/activity";
 type Values = {
   whatIDid: string;
   whatsLeft: string;
+  reasoning: string;
+  alternatives: string;
 };
 
 export function WorklogForm({
@@ -36,18 +38,31 @@ export function WorklogForm({
     defaultValues: {
       whatIDid: initial?.whatIDid ?? "",
       whatsLeft: initial?.whatsLeft ?? "",
+      reasoning: initial?.reasoning ?? "",
+      alternatives: initial?.alternatives ?? "",
     },
   });
 
   useEffect(() => {
     if (open) {
-      reset({ whatIDid: initial?.whatIDid ?? "", whatsLeft: initial?.whatsLeft ?? "" });
+      reset({
+        whatIDid: initial?.whatIDid ?? "",
+        whatsLeft: initial?.whatsLeft ?? "",
+        reasoning: initial?.reasoning ?? "",
+        alternatives: initial?.alternatives ?? "",
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, initial?.id]);
 
   const create = useMutation({
-    mutationFn: (v: Values) => worklogsApi.create({ owner: scopeToOwner(scope), whatIDid: v.whatIDid, whatsLeft: v.whatsLeft || null }),
+    mutationFn: (v: Values) => worklogsApi.create({
+      owner: scopeToOwner(scope),
+      whatIDid: v.whatIDid,
+      whatsLeft: v.whatsLeft || null,
+      reasoning: v.reasoning || null,
+      alternatives: v.alternatives || null,
+    }),
     onSuccess: () => {
       toast.success("Worklog kaydedildi.");
       qc.invalidateQueries({ queryKey: ["worklogs"] });
@@ -58,7 +73,12 @@ export function WorklogForm({
     onError: (e) => toast.error(errorMessage(e)),
   });
   const update = useMutation({
-    mutationFn: (v: Values) => worklogsApi.update(initial!.id, { whatIDid: v.whatIDid, whatsLeft: v.whatsLeft || null }),
+    mutationFn: (v: Values) => worklogsApi.update(initial!.id, {
+      whatIDid: v.whatIDid,
+      whatsLeft: v.whatsLeft || null,
+      reasoning: v.reasoning || null,
+      alternatives: v.alternatives || null,
+    }),
     onSuccess: () => {
       toast.success("Worklog güncellendi.");
       qc.invalidateQueries({ queryKey: ["worklogs"] });
@@ -89,6 +109,23 @@ export function WorklogForm({
               rows={3}
               placeholder="Yarın bunu yapmam lazım…"
               {...register("whatsLeft")}
+            />
+          </Field>
+          <Field
+            label="Neden bu yaklaşım?"
+            hint="Opsiyonel — eğer bir karar verdiysen, neden öyle karar verdiğin."
+          >
+            <Textarea
+              rows={3}
+              placeholder="JWT seçtim çünkü stateless API kalır…"
+              {...register("reasoning")}
+            />
+          </Field>
+          <Field label="Alternatifler" hint="Reddedilen seçenekler ve neden tercih edilmediği.">
+            <Textarea
+              rows={2}
+              placeholder="Session + Redis — extra cache layer, gereksiz."
+              {...register("alternatives")}
             />
           </Field>
           <DialogFooter>

@@ -29,7 +29,6 @@ export function ComponentResumeClient({ componentId }: { componentId: number }) 
       }}
       recentWorklogs={r.recentWorklogs}
       openNextSteps={r.openNextSteps}
-      recentDecisions={r.recentDecisions}
       resources={r.resources}
       recentIdeas={r.recentIdeas}
     />

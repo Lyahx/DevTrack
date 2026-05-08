@@ -22,7 +22,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOwnerValidator, OwnerValidator>();
         services.AddScoped<IActivityTrackingService, ActivityTrackingService>();
         services.AddScoped<IWorklogService, WorklogService>();
-        services.AddScoped<IDecisionService, DecisionService>();
         services.AddScoped<INextStepService, NextStepService>();
         services.AddScoped<IIdeaService, IdeaService>();
         services.AddScoped<IResourceService, ResourceService>();

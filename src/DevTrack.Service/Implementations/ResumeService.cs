@@ -1,6 +1,5 @@
 using AutoMapper;
 using DevTrack.Domain.DTOs.Components;
-using DevTrack.Domain.DTOs.Decisions;
 using DevTrack.Domain.DTOs.Ideas;
 using DevTrack.Domain.DTOs.LearningTracks;
 using DevTrack.Domain.DTOs.NextSteps;
@@ -23,7 +22,6 @@ public class ResumeService : IResumeService
     private readonly ILearningModuleRepository _modules;
     private readonly IWorklogRepository _worklogs;
     private readonly INextStepRepository _steps;
-    private readonly IDecisionRepository _decisions;
     private readonly IResourceRepository _resources;
     private readonly IIdeaRepository _ideas;
     private readonly ICurrentUser _currentUser;
@@ -36,7 +34,6 @@ public class ResumeService : IResumeService
         ILearningModuleRepository modules,
         IWorklogRepository worklogs,
         INextStepRepository steps,
-        IDecisionRepository decisions,
         IResourceRepository resources,
         IIdeaRepository ideas,
         ICurrentUser currentUser,
@@ -48,7 +45,6 @@ public class ResumeService : IResumeService
         _modules = modules;
         _worklogs = worklogs;
         _steps = steps;
-        _decisions = decisions;
         _resources = resources;
         _ideas = ideas;
         _currentUser = currentUser;
@@ -68,7 +64,6 @@ public class ResumeService : IResumeService
 
         var recentWorklogs = await _worklogs.ListByScopeAsync(userId, scope, take: 5, includeDeleted: false, ct);
         var openNextSteps = await _steps.ListByScopeAsync(userId, scope, openOnly: true, take: null, includeDeleted: false, ct);
-        var recentDecisions = await _decisions.ListByScopeAsync(userId, scope, take: 3, includeDeleted: false, ct);
         var resources = await _resources.ListByScopeAsync(userId, scope, includeDeleted: false, ct);
         var recentIdeas = await _ideas.ListByScopeAsync(userId, scope, unconvertedOnly: true, take: 5, includeDeleted: false, ct);
 
@@ -78,7 +73,6 @@ public class ResumeService : IResumeService
             Components = components.Select(c => _mapper.Map<ComponentResponse>(c)).ToList(),
             RecentWorklogs = recentWorklogs.Select(w => _mapper.Map<WorklogResponse>(w)).ToList(),
             OpenNextSteps = openNextSteps.Select(s => _mapper.Map<NextStepResponse>(s)).ToList(),
-            RecentDecisions = recentDecisions.Select(d => _mapper.Map<DecisionResponse>(d)).ToList(),
             Resources = resources.Select(r => _mapper.Map<ResourceResponse>(r)).ToList(),
             RecentIdeas = recentIdeas.Select(i => _mapper.Map<IdeaResponse>(i)).ToList(),
             DaysSinceLastActivity = DaysSince(project.LastActivityAt)
@@ -96,7 +90,6 @@ public class ResumeService : IResumeService
 
         var recentWorklogs = await _worklogs.ListByScopeAsync(userId, scope, take: 5, includeDeleted: false, ct);
         var openNextSteps = await _steps.ListByScopeAsync(userId, scope, openOnly: true, take: null, includeDeleted: false, ct);
-        var recentDecisions = await _decisions.ListByScopeAsync(userId, scope, take: 3, includeDeleted: false, ct);
         var resources = await _resources.ListByScopeAsync(userId, scope, includeDeleted: false, ct);
         var recentIdeas = await _ideas.ListByScopeAsync(userId, scope, unconvertedOnly: true, take: 5, includeDeleted: false, ct);
 
@@ -105,7 +98,6 @@ public class ResumeService : IResumeService
             Component = _mapper.Map<ComponentResponse>(component),
             RecentWorklogs = recentWorklogs.Select(w => _mapper.Map<WorklogResponse>(w)).ToList(),
             OpenNextSteps = openNextSteps.Select(s => _mapper.Map<NextStepResponse>(s)).ToList(),
-            RecentDecisions = recentDecisions.Select(d => _mapper.Map<DecisionResponse>(d)).ToList(),
             Resources = resources.Select(r => _mapper.Map<ResourceResponse>(r)).ToList(),
             RecentIdeas = recentIdeas.Select(i => _mapper.Map<IdeaResponse>(i)).ToList(),
             DaysSinceLastActivity = DaysSince(component.LastActivityAt)
@@ -125,7 +117,6 @@ public class ResumeService : IResumeService
 
         var recentWorklogs = await _worklogs.ListByScopeAsync(userId, scope, take: 5, includeDeleted: false, ct);
         var openNextSteps = await _steps.ListByScopeAsync(userId, scope, openOnly: true, take: null, includeDeleted: false, ct);
-        var recentDecisions = await _decisions.ListByScopeAsync(userId, scope, take: 3, includeDeleted: false, ct);
         var resources = await _resources.ListByScopeAsync(userId, scope, includeDeleted: false, ct);
         var recentIdeas = await _ideas.ListByScopeAsync(userId, scope, unconvertedOnly: true, take: 5, includeDeleted: false, ct);
 
@@ -138,7 +129,6 @@ public class ResumeService : IResumeService
             Modules = modules.Select(m => _mapper.Map<LearningModuleResponse>(m)).ToList(),
             RecentWorklogs = recentWorklogs.Select(w => _mapper.Map<WorklogResponse>(w)).ToList(),
             OpenNextSteps = openNextSteps.Select(s => _mapper.Map<NextStepResponse>(s)).ToList(),
-            RecentDecisions = recentDecisions.Select(d => _mapper.Map<DecisionResponse>(d)).ToList(),
             Resources = resources.Select(r => _mapper.Map<ResourceResponse>(r)).ToList(),
             RecentIdeas = recentIdeas.Select(i => _mapper.Map<IdeaResponse>(i)).ToList(),
             ProgressPercent = progress,
@@ -157,7 +147,6 @@ public class ResumeService : IResumeService
 
         var recentWorklogs = await _worklogs.ListByScopeAsync(userId, scope, take: 5, includeDeleted: false, ct);
         var openNextSteps = await _steps.ListByScopeAsync(userId, scope, openOnly: true, take: null, includeDeleted: false, ct);
-        var recentDecisions = await _decisions.ListByScopeAsync(userId, scope, take: 3, includeDeleted: false, ct);
         var resources = await _resources.ListByScopeAsync(userId, scope, includeDeleted: false, ct);
         var recentIdeas = await _ideas.ListByScopeAsync(userId, scope, unconvertedOnly: true, take: 5, includeDeleted: false, ct);
 
@@ -166,7 +155,6 @@ public class ResumeService : IResumeService
             Module = _mapper.Map<LearningModuleResponse>(module),
             RecentWorklogs = recentWorklogs.Select(w => _mapper.Map<WorklogResponse>(w)).ToList(),
             OpenNextSteps = openNextSteps.Select(s => _mapper.Map<NextStepResponse>(s)).ToList(),
-            RecentDecisions = recentDecisions.Select(d => _mapper.Map<DecisionResponse>(d)).ToList(),
             Resources = resources.Select(r => _mapper.Map<ResourceResponse>(r)).ToList(),
             RecentIdeas = recentIdeas.Select(i => _mapper.Map<IdeaResponse>(i)).ToList(),
             DaysSinceLastActivity = DaysSince(module.LastActivityAt)

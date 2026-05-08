@@ -14,7 +14,6 @@ public class DevSeedResult
     public int LearningModules { get; set; }
     public int Tags { get; set; }
     public int Worklogs { get; set; }
-    public int Decisions { get; set; }
     public int NextSteps { get; set; }
     public int Ideas { get; set; }
     public int Resources { get; set; }

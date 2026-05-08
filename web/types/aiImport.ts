@@ -3,11 +3,7 @@ import type { NextStepPriority, ResourceType } from "./enums";
 export type AiWorklogItem = {
   whatIDid: string;
   whatsLeft?: string | null;
-};
-
-export type AiDecisionItem = {
-  title: string;
-  reasoning: string;
+  reasoning?: string | null;
   alternatives?: string | null;
 };
 
@@ -29,7 +25,6 @@ export type AiResourceItem = {
 
 export type AiExtractionResult = {
   worklogs: AiWorklogItem[];
-  decisions: AiDecisionItem[];
   nextSteps: AiNextStepItem[];
   ideas: AiIdeaItem[];
   resources: AiResourceItem[];
@@ -37,7 +32,6 @@ export type AiExtractionResult = {
 
 export type AiImportApplyResult = {
   worklogsCreated: number;
-  decisionsCreated: number;
   nextStepsCreated: number;
   ideasCreated: number;
   resourcesCreated: number;

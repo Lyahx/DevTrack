@@ -26,7 +26,6 @@ export function ModuleResumeClient({ moduleId }: { moduleId: number }) {
       }}
       recentWorklogs={r.recentWorklogs}
       openNextSteps={r.openNextSteps}
-      recentDecisions={r.recentDecisions}
       resources={r.resources}
       recentIdeas={r.recentIdeas}
     />

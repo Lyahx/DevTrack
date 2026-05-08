@@ -13,7 +13,6 @@ public class ComponentService : IComponentService
     private readonly IComponentRepository _components;
     private readonly IProjectRepository _projects;
     private readonly IWorklogRepository _worklogs;
-    private readonly IDecisionRepository _decisions;
     private readonly INextStepRepository _steps;
     private readonly IIdeaRepository _ideas;
     private readonly IResourceRepository _resources;
@@ -26,7 +25,6 @@ public class ComponentService : IComponentService
         IComponentRepository components,
         IProjectRepository projects,
         IWorklogRepository worklogs,
-        IDecisionRepository decisions,
         INextStepRepository steps,
         IIdeaRepository ideas,
         IResourceRepository resources,
@@ -38,7 +36,6 @@ public class ComponentService : IComponentService
         _components = components;
         _projects = projects;
         _worklogs = worklogs;
-        _decisions = decisions;
         _steps = steps;
         _ideas = ideas;
         _resources = resources;
@@ -106,7 +103,6 @@ public class ComponentService : IComponentService
         try
         {
             await _worklogs.SoftDeleteByScopeAsync(scope, now, ct);
-            await _decisions.SoftDeleteByScopeAsync(scope, now, ct);
             await _steps.SoftDeleteByScopeAsync(scope, now, ct);
             await _ideas.SoftDeleteByScopeAsync(scope, now, ct);
             await _resources.SoftDeleteByScopeAsync(scope, now, ct);

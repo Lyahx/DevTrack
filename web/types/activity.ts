@@ -14,6 +14,8 @@ type Audited = {
 export type WorklogResponse = Audited & {
   whatIDid: string;
   whatsLeft: string | null;
+  reasoning: string | null;
+  alternatives: string | null;
   loggedAt: string;
 };
 
@@ -21,12 +23,16 @@ export type WorklogCreateRequest = {
   owner: OwnerReference;
   whatIDid: string;
   whatsLeft?: string | null;
+  reasoning?: string | null;
+  alternatives?: string | null;
   loggedAt?: string | null;
 };
 
 export type WorklogUpdateRequest = {
   whatIDid: string;
   whatsLeft?: string | null;
+  reasoning?: string | null;
+  alternatives?: string | null;
   loggedAt?: string | null;
 };
 
@@ -42,29 +48,15 @@ export type WorklogListQuery = {
   includeDeleted?: boolean;
 };
 
-export type DecisionResponse = Audited & {
-  title: string;
-  reasoning: string;
-  alternatives: string | null;
-  decidedAt: string;
+type ScopeListQuery = {
+  projectId?: number;
+  componentId?: number;
+  learningTrackId?: number;
+  learningModuleId?: number;
+  page?: number;
+  pageSize?: number;
+  includeDeleted?: boolean;
 };
-
-export type DecisionCreateRequest = {
-  owner: OwnerReference;
-  title: string;
-  reasoning: string;
-  alternatives?: string | null;
-  decidedAt?: string | null;
-};
-
-export type DecisionUpdateRequest = {
-  title: string;
-  reasoning: string;
-  alternatives?: string | null;
-  decidedAt?: string | null;
-};
-
-export type DecisionListQuery = Omit<WorklogListQuery, "fromDate" | "toDate">;
 
 export type NextStepResponse = Audited & {
   description: string;
@@ -84,7 +76,7 @@ export type NextStepUpdateRequest = {
   priority: NextStepPriority;
 };
 
-export type NextStepListQuery = DecisionListQuery & {
+export type NextStepListQuery = ScopeListQuery & {
   isCompleted?: boolean;
   priority?: NextStepPriority;
 };
@@ -105,7 +97,7 @@ export type IdeaUpdateRequest = {
   content: string;
 };
 
-export type IdeaListQuery = DecisionListQuery & {
+export type IdeaListQuery = ScopeListQuery & {
   isConvertedToNextStep?: boolean;
 };
 
@@ -136,6 +128,6 @@ export type ResourceUpdateRequest = {
   notes?: string | null;
 };
 
-export type ResourceListQuery = DecisionListQuery & {
+export type ResourceListQuery = ScopeListQuery & {
   type?: ResourceType;
 };

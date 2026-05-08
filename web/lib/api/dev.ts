@@ -8,7 +8,6 @@ export type SeedResult = {
   learningModules: number;
   tags: number;
   worklogs: number;
-  decisions: number;
   nextSteps: number;
   ideas: number;
   resources: number;

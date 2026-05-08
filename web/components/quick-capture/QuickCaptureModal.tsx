@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { OwnerPicker } from "@/components/common/OwnerPicker";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { decisionsApi } from "@/lib/api/decisions";
 import { ideasApi } from "@/lib/api/ideas";
 import { nextStepsApi } from "@/lib/api/nextSteps";
 import { worklogsApi } from "@/lib/api/worklogs";
@@ -15,16 +14,15 @@ import { useQuickCaptureStore } from "@/store/quickCapture";
 import type { OwnerReference } from "@/types/owner";
 import { cn } from "@/lib/utils";
 
-type CaptureType = "Idea" | "NextStep" | "Worklog" | "Decision";
+type CaptureType = "Idea" | "NextStep" | "Worklog";
 
 const TYPE_LABELS: Record<CaptureType, string> = {
   Idea: "Fikir",
   NextStep: "Adım",
   Worklog: "Worklog",
-  Decision: "Karar",
 };
 
-const TYPES: CaptureType[] = ["Idea", "NextStep", "Worklog", "Decision"];
+const TYPES: CaptureType[] = ["Idea", "NextStep", "Worklog"];
 
 export function QuickCaptureModal() {
   const open = useQuickCaptureStore((s) => s.open);
@@ -58,8 +56,6 @@ export function QuickCaptureModal() {
           return nextStepsApi.create({ owner, description: content, priority: "Medium" });
         case "Worklog":
           return worklogsApi.create({ owner, whatIDid: content });
-        case "Decision":
-          return decisionsApi.create({ owner, title: content.slice(0, 100), reasoning: content });
       }
     },
     onSuccess: () => {
@@ -67,7 +63,6 @@ export function QuickCaptureModal() {
       qc.invalidateQueries({ queryKey: ["worklogs"] });
       qc.invalidateQueries({ queryKey: ["ideas"] });
       qc.invalidateQueries({ queryKey: ["next-steps"] });
-      qc.invalidateQueries({ queryKey: ["decisions"] });
       qc.invalidateQueries({ queryKey: ["dashboard"] });
       qc.invalidateQueries({ queryKey: ["resume"] });
       close();

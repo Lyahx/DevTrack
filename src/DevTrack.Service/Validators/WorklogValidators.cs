@@ -10,6 +10,8 @@ public class WorklogCreateRequestValidator : AbstractValidator<WorklogCreateRequ
         RuleFor(x => x.Owner).NotNull().SetValidator(new OwnerReferenceValidator());
         RuleFor(x => x.WhatIDid).NotEmpty().MaximumLength(4000);
         RuleFor(x => x.WhatsLeft).MaximumLength(4000);
+        RuleFor(x => x.Reasoning).MaximumLength(4000);
+        RuleFor(x => x.Alternatives).MaximumLength(2000);
     }
 }
 
@@ -19,5 +21,7 @@ public class WorklogUpdateRequestValidator : AbstractValidator<WorklogUpdateRequ
     {
         RuleFor(x => x.WhatIDid).NotEmpty().MaximumLength(4000);
         RuleFor(x => x.WhatsLeft).MaximumLength(4000);
+        RuleFor(x => x.Reasoning).MaximumLength(4000);
+        RuleFor(x => x.Alternatives).MaximumLength(2000);
     }
 }

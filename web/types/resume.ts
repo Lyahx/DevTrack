@@ -1,5 +1,4 @@
 import type {
-  DecisionResponse,
   IdeaResponse,
   NextStepResponse,
   ResourceResponse,
@@ -12,7 +11,6 @@ import type { ProjectResponse } from "./project";
 type ResumeBase = {
   recentWorklogs: WorklogResponse[];
   openNextSteps: NextStepResponse[];
-  recentDecisions: DecisionResponse[];
   resources: ResourceResponse[];
   recentIdeas: IdeaResponse[];
   daysSinceLastActivity: number | null;

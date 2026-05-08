@@ -7,7 +7,6 @@ import {
   CheckSquare,
   ExternalLink,
   FileText,
-  Lightbulb,
   Link2,
   MapPin,
   Sparkles,
@@ -23,7 +22,6 @@ import { nextStepsApi } from "@/lib/api/nextSteps";
 import { daysSinceLabel, formatDateTime, formatRelative } from "@/lib/date";
 import { errorMessage } from "@/lib/error";
 import type {
-  DecisionResponse,
   IdeaResponse,
   NextStepResponse,
   ResourceResponse,
@@ -62,7 +60,6 @@ export function ResumeView({
   modules,
   recentWorklogs,
   openNextSteps,
-  recentDecisions,
   resources,
   recentIdeas,
   progressPercent,
@@ -72,7 +69,6 @@ export function ResumeView({
   modules?: LearningModuleResponse[];
   recentWorklogs: WorklogResponse[];
   openNextSteps: NextStepResponse[];
-  recentDecisions: DecisionResponse[];
   resources: ResourceResponse[];
   recentIdeas: IdeaResponse[];
   progressPercent?: number;
@@ -186,6 +182,16 @@ export function ResumeView({
                   {w.whatsLeft ? (
                     <p className="mt-1.5 text-[12px] italic text-text-muted">Geriye kalan: {w.whatsLeft}</p>
                   ) : null}
+                  {w.reasoning ? (
+                    <p className="mt-2 border-t border-border-subtle pt-2 text-[12px] text-text-muted">
+                      <span className="font-medium text-text-secondary">Neden:</span> {w.reasoning}
+                    </p>
+                  ) : null}
+                  {w.alternatives ? (
+                    <p className="mt-1 text-[11px] text-text-faint">
+                      <span className="font-medium text-text-muted">Alternatifler:</span> {w.alternatives}
+                    </p>
+                  ) : null}
                 </div>
               </li>
             ))}
@@ -207,32 +213,6 @@ export function ResumeView({
                   <div className="mt-1.5"><PriorityBadge priority={s.priority} /></div>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="space-y-3">
-        <SectionHeading icon={<Lightbulb />}>Son kararlar</SectionHeading>
-        {recentDecisions.length === 0 ? (
-          <EmptyHint>Henüz karar yok.</EmptyHint>
-        ) : (
-          <div className="space-y-2">
-            {recentDecisions.map((d) => (
-              <details key={d.id} className="group rounded-md border border-border-subtle bg-surface-1">
-                <summary className="cursor-pointer list-none p-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-[13px] font-medium text-text">{d.title}</span>
-                    <span className="font-mono text-[10px] text-text-faint">{formatRelative(d.decidedAt)}</span>
-                  </div>
-                </summary>
-                <div className="border-t border-border-subtle px-3 py-2.5 text-[13px] text-text-secondary">
-                  <p className="whitespace-pre-wrap">{d.reasoning}</p>
-                  {d.alternatives ? (
-                    <p className="mt-2 text-[12px] text-text-muted"><span className="font-medium text-text-secondary">Alternatifler:</span> {d.alternatives}</p>
-                  ) : null}
-                </div>
-              </details>
             ))}
           </div>
         )}

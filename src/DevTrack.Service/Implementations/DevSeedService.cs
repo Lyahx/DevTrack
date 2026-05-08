@@ -290,24 +290,45 @@ public class DevSeedService : IDevSeedService
                 .ExecuteUpdateAsync(s => s.SetProperty(x => x.LoggedAt, loggedAt).SetProperty(x => x.CreatedAt, loggedAt), ct);
         }
 
-        // ─── Decisions ────────────────────────────────────────────────────────
-        var decisions = new List<(Decision d, DateTime when)>
+        // ─── Decision-flavored worklogs (Decision was merged into Worklog) ────
+        var decisionWorklogs = new List<(Worklog w, DateTime when)>
         {
-            (new Decision { UserId = userId, ProjectId = aos.Id, Title = "JWT seçildi (session yerine)", Reasoning = "AOS.Web'i statik host edebilmek istiyorum, server-side session storage zorunluluk yaratırdı. JWT ile stateless API kalır.", Alternatives = "Session + Redis. Daha kolay revoke ama cache layer ekliyor — şimdilik gereksiz." }, now.AddDays(-6)),
-            (new Decision { UserId = userId, ComponentId = aosApi.Id, Title = "EF Core soft-delete + global query filter", Reasoning = "Hard delete ile silinen kayıtları geri getirmek imkansız oluyor. IsDeleted kolonu + global filter en az ceremony.", Alternatives = "Audit log tablosu — overkill; ayrı 'archived' tablolar — schema duplikasyonu." }, now.AddDays(-15)),
-            (new Decision { UserId = userId, LearningTrackId = sysTrack.Id, Title = "Önce CQRS, sonra Saga", Reasoning = "Saga'yı CQRS örnekleri üzerinde tartışmak daha mantıklı çünkü saga'nın komutları zaten bir Command bus'ta dolaşacak.", Alternatives = "Direkt saga'ya başla — soyut kalır." }, now.AddDays(-10)),
+            (new Worklog
+            {
+                UserId = userId,
+                ProjectId = aos.Id,
+                WhatIDid = "JWT seçildi (session yerine)",
+                Reasoning = "AOS.Web'i statik host edebilmek istiyorum, server-side session storage zorunluluk yaratırdı. JWT ile stateless API kalır.",
+                Alternatives = "Session + Redis. Daha kolay revoke ama cache layer ekliyor — şimdilik gereksiz.",
+            }, now.AddDays(-6)),
+            (new Worklog
+            {
+                UserId = userId,
+                ComponentId = aosApi.Id,
+                WhatIDid = "EF Core soft-delete + global query filter",
+                Reasoning = "Hard delete ile silinen kayıtları geri getirmek imkansız oluyor. IsDeleted kolonu + global filter en az ceremony.",
+                Alternatives = "Audit log tablosu — overkill; ayrı 'archived' tablolar — schema duplikasyonu.",
+            }, now.AddDays(-15)),
+            (new Worklog
+            {
+                UserId = userId,
+                LearningTrackId = sysTrack.Id,
+                WhatIDid = "Önce CQRS, sonra Saga",
+                Reasoning = "Saga'yı CQRS örnekleri üzerinde tartışmak daha mantıklı çünkü saga'nın komutları zaten bir Command bus'ta dolaşacak.",
+                Alternatives = "Direkt saga'ya başla — soyut kalır.",
+            }, now.AddDays(-10)),
         };
-        foreach (var (d, _) in decisions)
+        foreach (var (w, _) in decisionWorklogs)
         {
-            d.DecidedAt = now;
-            await _db.Decisions.AddAsync(d, ct);
+            w.LoggedAt = now;
+            await _db.Worklogs.AddAsync(w, ct);
         }
         await _db.SaveChangesAsync(ct);
-        result.Decisions = decisions.Count;
-        foreach (var (d, when) in decisions)
+        result.Worklogs += decisionWorklogs.Count;
+        foreach (var (w, when) in decisionWorklogs)
         {
-            await _db.Decisions.Where(x => x.Id == d.Id)
-                .ExecuteUpdateAsync(s => s.SetProperty(x => x.DecidedAt, when).SetProperty(x => x.CreatedAt, when), ct);
+            await _db.Worklogs.Where(x => x.Id == w.Id)
+                .ExecuteUpdateAsync(s => s.SetProperty(x => x.LoggedAt, when).SetProperty(x => x.CreatedAt, when), ct);
         }
 
         // ─── NextSteps ────────────────────────────────────────────────────────
@@ -418,7 +439,6 @@ public class DevSeedService : IDevSeedService
     {
         var rows = 0;
         rows += await _db.Worklogs.IgnoreQueryFilters().Where(x => x.UserId == userId).ExecuteDeleteAsync(ct);
-        rows += await _db.Decisions.IgnoreQueryFilters().Where(x => x.UserId == userId).ExecuteDeleteAsync(ct);
         // Ideas FK -> NextSteps; null out first
         await _db.Ideas.IgnoreQueryFilters().Where(x => x.UserId == userId)
             .ExecuteUpdateAsync(s => s.SetProperty(x => x.ConvertedNextStepId, (int?)null), ct);

@@ -28,7 +28,6 @@ export function ProjectResumeClient({ projectId }: { projectId: number }) {
       components={r.components}
       recentWorklogs={r.recentWorklogs}
       openNextSteps={r.openNextSteps}
-      recentDecisions={r.recentDecisions}
       resources={r.resources}
       recentIdeas={r.recentIdeas}
     />

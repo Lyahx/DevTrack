@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { ComponentFormModal } from "@/components/components/ComponentFormModal";
 import { StatusNoteEditor } from "@/components/components/StatusNoteEditor";
 import { CommitList } from "@/components/projects/CommitList";
-import { DecisionTab } from "@/components/decisions/DecisionTab";
 import { IdeaTab } from "@/components/ideas/IdeaTab";
 import { NextStepTab } from "@/components/next-steps/NextStepTab";
 import { ProjectFormModal } from "@/components/projects/ProjectFormModal";
@@ -138,7 +137,6 @@ export function ProjectDetailClient({ projectId }: { projectId: number }) {
           <TabsTrigger value="overview">Genel</TabsTrigger>
           <TabsTrigger value="worklogs">Worklog</TabsTrigger>
           <TabsTrigger value="commits">Commit&apos;ler</TabsTrigger>
-          <TabsTrigger value="decisions">Kararlar</TabsTrigger>
           <TabsTrigger value="next-steps">Adımlar</TabsTrigger>
           <TabsTrigger value="ideas">Fikirler</TabsTrigger>
           <TabsTrigger value="resources">Kaynaklar</TabsTrigger>
@@ -201,9 +199,6 @@ export function ProjectDetailClient({ projectId }: { projectId: number }) {
         </TabsContent>
         <TabsContent value="commits" className="mt-6">
           <CommitList projectId={projectId} hasRepo={!!p.repoUrl} />
-        </TabsContent>
-        <TabsContent value="decisions" className="mt-6">
-          <DecisionTab scope={{ kind: "project", id: projectId }} />
         </TabsContent>
         <TabsContent value="next-steps" className="mt-6">
           <NextStepTab scope={{ kind: "project", id: projectId }} />

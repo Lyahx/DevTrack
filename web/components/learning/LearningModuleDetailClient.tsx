@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { DecisionTab } from "@/components/decisions/DecisionTab";
 import { IdeaTab } from "@/components/ideas/IdeaTab";
 import { LearningModuleFormModal } from "@/components/learning/LearningModuleFormModal";
 import { NextStepTab } from "@/components/next-steps/NextStepTab";
@@ -104,13 +103,11 @@ export function LearningModuleDetailClient({ trackId, moduleId }: { trackId: num
       <Tabs defaultValue="worklogs">
         <TabsList>
           <TabsTrigger value="worklogs">Worklog</TabsTrigger>
-          <TabsTrigger value="decisions">Kararlar</TabsTrigger>
           <TabsTrigger value="next-steps">Adımlar</TabsTrigger>
           <TabsTrigger value="ideas">Fikirler</TabsTrigger>
           <TabsTrigger value="resources">Kaynaklar</TabsTrigger>
         </TabsList>
         <TabsContent value="worklogs" className="mt-6"><WorklogTab scope={{ kind: "module", id: moduleId }} /></TabsContent>
-        <TabsContent value="decisions" className="mt-6"><DecisionTab scope={{ kind: "module", id: moduleId }} /></TabsContent>
         <TabsContent value="next-steps" className="mt-6"><NextStepTab scope={{ kind: "module", id: moduleId }} /></TabsContent>
         <TabsContent value="ideas" className="mt-6"><IdeaTab scope={{ kind: "module", id: moduleId }} /></TabsContent>
         <TabsContent value="resources" className="mt-6"><ResourceTab scope={{ kind: "module", id: moduleId }} /></TabsContent>

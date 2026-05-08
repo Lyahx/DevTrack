@@ -62,6 +62,9 @@ public class AiExtractionService : IAiExtractionService
                 new { role = "user", content = userPrompt },
             },
             temperature = _settings.Temperature,
+            // Reserve enough space for the JSON output. Without this, some LM Studio
+            // builds default to ~16-256 tokens and silently truncate to empty content.
+            max_tokens = 4096,
         };
 
         var url = $"{_settings.BaseUrl.TrimEnd('/')}/chat/completions";
@@ -88,12 +91,40 @@ public class AiExtractionService : IAiExtractionService
             throw new AiServiceException("AI_PROVIDER_ERROR", $"AI sağlayıcı hata döndü: {resp.StatusCode}");
         }
 
-        var envelope = await resp.Content.ReadFromJsonAsync<ChatCompletionResponse>(JsonOptions, ct)
-            ?? throw new AiServiceException("AI_BAD_RESPONSE", "AI sağlayıcı geçersiz yanıt verdi.");
+        var rawBody = await resp.Content.ReadAsStringAsync(ct);
+        ChatCompletionResponse? envelope;
+        try
+        {
+            envelope = JsonSerializer.Deserialize<ChatCompletionResponse>(rawBody, JsonOptions);
+        }
+        catch (JsonException)
+        {
+            envelope = null;
+        }
+
+        if (envelope is null)
+        {
+            _logger.LogWarning("AI envelope unparsable. Body head: {Head}", rawBody[..Math.Min(rawBody.Length, 500)]);
+            throw new AiServiceException("AI_BAD_RESPONSE", "AI sağlayıcı geçersiz yanıt verdi.");
+        }
 
         var content = envelope.Choices?.FirstOrDefault()?.Message?.Content;
+        var finishReason = envelope.Choices?.FirstOrDefault()?.FinishReason;
         if (string.IsNullOrWhiteSpace(content))
-            throw new AiServiceException("AI_EMPTY_CONTENT", "AI sağlayıcı boş içerik döndü.");
+        {
+            _logger.LogWarning(
+                "AI provider returned empty content. finish_reason={Reason} usage={Usage} body={Body}",
+                finishReason ?? "(none)",
+                envelope.Usage is null ? "(none)" : $"prompt={envelope.Usage.PromptTokens}, completion={envelope.Usage.CompletionTokens}, total={envelope.Usage.TotalTokens}",
+                rawBody.Length > 800 ? rawBody[..800] + "…" : rawBody);
+            var hint = finishReason switch
+            {
+                "length" => "Model max_tokens'a takıldı — daha büyük max_tokens veya context'i daha geniş bir model dene.",
+                "content_filter" => "İçerik filtreye takıldı.",
+                _ => "Transcript çok uzun olabilir veya model JSON üretemedi. Daha kısa transcript veya daha büyük model dene.",
+            };
+            throw new AiServiceException("AI_EMPTY_CONTENT", $"AI sağlayıcı boş içerik döndü. {hint}");
+        }
 
         // Some providers wrap JSON in ```json ... ``` fences; strip if present.
         content = StripCodeFence(content);
@@ -152,15 +183,28 @@ Output ONLY the JSON object.
     private class ChatCompletionResponse
     {
         public List<ChatChoice>? Choices { get; set; }
+        public Usage? Usage { get; set; }
     }
 
     private class ChatChoice
     {
         public ChatMessage? Message { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("finish_reason")]
+        public string? FinishReason { get; set; }
     }
 
     private class ChatMessage
     {
         public string? Content { get; set; }
+    }
+
+    private class Usage
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("prompt_tokens")]
+        public int PromptTokens { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("completion_tokens")]
+        public int CompletionTokens { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("total_tokens")]
+        public int TotalTokens { get; set; }
     }
 }

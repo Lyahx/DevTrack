@@ -123,6 +123,16 @@ export function WorklogTab({ scope }: { scope: Scope }) {
                     <span className="font-medium">Geriye kalan:</span> {w.whatsLeft}
                   </div>
                 ) : null}
+                {w.reasoning ? (
+                  <div className="rounded-md border-l-2 border-primary/40 bg-primary/5 px-3 py-2 text-xs text-text-secondary">
+                    <span className="font-medium text-text">Neden:</span> <span className="whitespace-pre-wrap">{w.reasoning}</span>
+                  </div>
+                ) : null}
+                {w.alternatives ? (
+                  <p className="text-xs text-text-muted">
+                    <span className="font-medium text-text-secondary">Alternatifler:</span> {w.alternatives}
+                  </p>
+                ) : null}
               </CardContent>
             </Card>
           ))}

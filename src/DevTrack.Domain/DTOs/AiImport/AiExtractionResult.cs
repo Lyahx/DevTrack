@@ -5,7 +5,6 @@ namespace DevTrack.Domain.DTOs.AiImport;
 public class AiExtractionResult
 {
     public List<AiWorklogItem> Worklogs { get; set; } = new();
-    public List<AiDecisionItem> Decisions { get; set; } = new();
     public List<AiNextStepItem> NextSteps { get; set; } = new();
     public List<AiIdeaItem> Ideas { get; set; } = new();
     public List<AiResourceItem> Resources { get; set; } = new();
@@ -15,12 +14,8 @@ public class AiWorklogItem
 {
     public string WhatIDid { get; set; } = string.Empty;
     public string? WhatsLeft { get; set; }
-}
-
-public class AiDecisionItem
-{
-    public string Title { get; set; } = string.Empty;
-    public string Reasoning { get; set; } = string.Empty;
+    // Optional — when the worklog is also a decision: why this approach + alternatives.
+    public string? Reasoning { get; set; }
     public string? Alternatives { get; set; }
 }
 
@@ -51,7 +46,6 @@ public class AiImportRequest
 public class AiImportApplyRequest
 {
     public List<AiWorklogItem> Worklogs { get; set; } = new();
-    public List<AiDecisionItem> Decisions { get; set; } = new();
     public List<AiNextStepItem> NextSteps { get; set; } = new();
     public List<AiIdeaItem> Ideas { get; set; } = new();
     public List<AiResourceItem> Resources { get; set; } = new();
@@ -60,7 +54,6 @@ public class AiImportApplyRequest
 public class AiImportApplyResult
 {
     public int WorklogsCreated { get; set; }
-    public int DecisionsCreated { get; set; }
     public int NextStepsCreated { get; set; }
     public int IdeasCreated { get; set; }
     public int ResourcesCreated { get; set; }

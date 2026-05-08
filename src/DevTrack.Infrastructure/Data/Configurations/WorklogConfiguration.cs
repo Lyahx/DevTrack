@@ -16,6 +16,8 @@ public class WorklogConfiguration : IEntityTypeConfiguration<Worklog>
 
         builder.Property(x => x.WhatIDid).IsRequired().HasMaxLength(4000);
         builder.Property(x => x.WhatsLeft).HasMaxLength(4000);
+        builder.Property(x => x.Reasoning).HasMaxLength(4000);
+        builder.Property(x => x.Alternatives).HasMaxLength(2000);
         builder.Property(x => x.LoggedAt).IsRequired();
 
         OwnedEntityConfigurationHelper.ConfigureOwnership(builder);

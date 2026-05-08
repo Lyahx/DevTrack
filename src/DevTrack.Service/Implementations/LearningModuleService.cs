@@ -14,7 +14,6 @@ public class LearningModuleService : ILearningModuleService
     private readonly ILearningModuleRepository _modules;
     private readonly ILearningTrackRepository _tracks;
     private readonly IWorklogRepository _worklogs;
-    private readonly IDecisionRepository _decisions;
     private readonly INextStepRepository _steps;
     private readonly IIdeaRepository _ideas;
     private readonly IResourceRepository _resources;
@@ -26,7 +25,6 @@ public class LearningModuleService : ILearningModuleService
         ILearningModuleRepository modules,
         ILearningTrackRepository tracks,
         IWorklogRepository worklogs,
-        IDecisionRepository decisions,
         INextStepRepository steps,
         IIdeaRepository ideas,
         IResourceRepository resources,
@@ -37,7 +35,6 @@ public class LearningModuleService : ILearningModuleService
         _modules = modules;
         _tracks = tracks;
         _worklogs = worklogs;
-        _decisions = decisions;
         _steps = steps;
         _ideas = ideas;
         _resources = resources;
@@ -103,7 +100,6 @@ public class LearningModuleService : ILearningModuleService
         try
         {
             await _worklogs.SoftDeleteByScopeAsync(scope, now, ct);
-            await _decisions.SoftDeleteByScopeAsync(scope, now, ct);
             await _steps.SoftDeleteByScopeAsync(scope, now, ct);
             await _ideas.SoftDeleteByScopeAsync(scope, now, ct);
             await _resources.SoftDeleteByScopeAsync(scope, now, ct);

@@ -14,7 +14,6 @@ public class AiImportService : IAiImportService
 {
     private readonly ILearningTrackRepository _tracks;
     private readonly IWorklogRepository _worklogs;
-    private readonly IDecisionRepository _decisions;
     private readonly INextStepRepository _nextSteps;
     private readonly IIdeaRepository _ideas;
     private readonly IResourceRepository _resources;
@@ -25,7 +24,6 @@ public class AiImportService : IAiImportService
     public AiImportService(
         ILearningTrackRepository tracks,
         IWorklogRepository worklogs,
-        IDecisionRepository decisions,
         INextStepRepository nextSteps,
         IIdeaRepository ideas,
         IResourceRepository resources,
@@ -35,7 +33,6 @@ public class AiImportService : IAiImportService
     {
         _tracks = tracks;
         _worklogs = worklogs;
-        _decisions = decisions;
         _nextSteps = nextSteps;
         _ideas = ideas;
         _resources = resources;
@@ -64,26 +61,13 @@ public class AiImportService : IAiImportService
                     UserId = userId,
                     WhatIDid = Truncate(w.WhatIDid, 4000),
                     WhatsLeft = string.IsNullOrWhiteSpace(w.WhatsLeft) ? null : Truncate(w.WhatsLeft!, 2000),
+                    Reasoning = string.IsNullOrWhiteSpace(w.Reasoning) ? null : Truncate(w.Reasoning!, 4000),
+                    Alternatives = string.IsNullOrWhiteSpace(w.Alternatives) ? null : Truncate(w.Alternatives!, 2000),
                     LoggedAt = now,
                 };
                 entity.ApplyOwner(owner);
                 await _worklogs.AddAsync(entity, ct);
                 result.WorklogsCreated++;
-            }
-
-            foreach (var d in request.Decisions.Where(x => !string.IsNullOrWhiteSpace(x.Title)))
-            {
-                var entity = new Decision
-                {
-                    UserId = userId,
-                    Title = Truncate(d.Title, 200),
-                    Reasoning = Truncate(d.Reasoning ?? string.Empty, 4000),
-                    Alternatives = string.IsNullOrWhiteSpace(d.Alternatives) ? null : Truncate(d.Alternatives!, 2000),
-                    DecidedAt = now,
-                };
-                entity.ApplyOwner(owner);
-                await _decisions.AddAsync(entity, ct);
-                result.DecisionsCreated++;
             }
 
             foreach (var s in request.NextSteps.Where(x => !string.IsNullOrWhiteSpace(x.Description)))

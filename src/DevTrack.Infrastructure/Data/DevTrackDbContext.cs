@@ -17,7 +17,6 @@ public class DevTrackDbContext : DbContext
     public DbSet<ComponentTag> ComponentTags => Set<ComponentTag>();
     public DbSet<LearningTrackTag> LearningTrackTags => Set<LearningTrackTag>();
     public DbSet<Worklog> Worklogs => Set<Worklog>();
-    public DbSet<Decision> Decisions => Set<Decision>();
     public DbSet<NextStep> NextSteps => Set<NextStep>();
     public DbSet<Idea> Ideas => Set<Idea>();
     public DbSet<Resource> Resources => Set<Resource>();

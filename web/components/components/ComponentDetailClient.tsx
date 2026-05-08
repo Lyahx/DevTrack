@@ -8,7 +8,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { ComponentFormModal } from "@/components/components/ComponentFormModal";
 import { StatusNoteEditor } from "@/components/components/StatusNoteEditor";
-import { DecisionTab } from "@/components/decisions/DecisionTab";
 import { IdeaTab } from "@/components/ideas/IdeaTab";
 import { NextStepTab } from "@/components/next-steps/NextStepTab";
 import { ResourceTab } from "@/components/resources/ResourceTab";
@@ -111,13 +110,11 @@ export function ComponentDetailClient({ componentId }: { componentId: number }) 
       <Tabs defaultValue="worklogs">
         <TabsList>
           <TabsTrigger value="worklogs">Worklog</TabsTrigger>
-          <TabsTrigger value="decisions">Kararlar</TabsTrigger>
           <TabsTrigger value="next-steps">Adımlar</TabsTrigger>
           <TabsTrigger value="ideas">Fikirler</TabsTrigger>
           <TabsTrigger value="resources">Kaynaklar</TabsTrigger>
         </TabsList>
         <TabsContent value="worklogs" className="mt-6"><WorklogTab scope={{ kind: "component", id: componentId }} /></TabsContent>
-        <TabsContent value="decisions" className="mt-6"><DecisionTab scope={{ kind: "component", id: componentId }} /></TabsContent>
         <TabsContent value="next-steps" className="mt-6"><NextStepTab scope={{ kind: "component", id: componentId }} /></TabsContent>
         <TabsContent value="ideas" className="mt-6"><IdeaTab scope={{ kind: "component", id: componentId }} /></TabsContent>
         <TabsContent value="resources" className="mt-6"><ResourceTab scope={{ kind: "component", id: componentId }} /></TabsContent>

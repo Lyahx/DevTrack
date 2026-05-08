@@ -1,5 +1,4 @@
 using DevTrack.Domain.DTOs.Components;
-using DevTrack.Domain.DTOs.Decisions;
 using DevTrack.Domain.DTOs.Ideas;
 using DevTrack.Domain.DTOs.LearningTracks;
 using DevTrack.Domain.DTOs.NextSteps;
@@ -15,7 +14,6 @@ public class ResumeProjectResponse
     public IReadOnlyList<ComponentResponse> Components { get; set; } = Array.Empty<ComponentResponse>();
     public IReadOnlyList<WorklogResponse> RecentWorklogs { get; set; } = Array.Empty<WorklogResponse>();
     public IReadOnlyList<NextStepResponse> OpenNextSteps { get; set; } = Array.Empty<NextStepResponse>();
-    public IReadOnlyList<DecisionResponse> RecentDecisions { get; set; } = Array.Empty<DecisionResponse>();
     public IReadOnlyList<ResourceResponse> Resources { get; set; } = Array.Empty<ResourceResponse>();
     public IReadOnlyList<IdeaResponse> RecentIdeas { get; set; } = Array.Empty<IdeaResponse>();
     public int? DaysSinceLastActivity { get; set; }
@@ -26,7 +24,6 @@ public class ResumeComponentResponse
     public ComponentResponse Component { get; set; } = null!;
     public IReadOnlyList<WorklogResponse> RecentWorklogs { get; set; } = Array.Empty<WorklogResponse>();
     public IReadOnlyList<NextStepResponse> OpenNextSteps { get; set; } = Array.Empty<NextStepResponse>();
-    public IReadOnlyList<DecisionResponse> RecentDecisions { get; set; } = Array.Empty<DecisionResponse>();
     public IReadOnlyList<ResourceResponse> Resources { get; set; } = Array.Empty<ResourceResponse>();
     public IReadOnlyList<IdeaResponse> RecentIdeas { get; set; } = Array.Empty<IdeaResponse>();
     public int? DaysSinceLastActivity { get; set; }
@@ -38,7 +35,6 @@ public class ResumeLearningTrackResponse
     public IReadOnlyList<LearningModuleResponse> Modules { get; set; } = Array.Empty<LearningModuleResponse>();
     public IReadOnlyList<WorklogResponse> RecentWorklogs { get; set; } = Array.Empty<WorklogResponse>();
     public IReadOnlyList<NextStepResponse> OpenNextSteps { get; set; } = Array.Empty<NextStepResponse>();
-    public IReadOnlyList<DecisionResponse> RecentDecisions { get; set; } = Array.Empty<DecisionResponse>();
     public IReadOnlyList<ResourceResponse> Resources { get; set; } = Array.Empty<ResourceResponse>();
     public IReadOnlyList<IdeaResponse> RecentIdeas { get; set; } = Array.Empty<IdeaResponse>();
     public decimal ProgressPercent { get; set; }
@@ -50,7 +46,6 @@ public class ResumeLearningModuleResponse
     public LearningModuleResponse Module { get; set; } = null!;
     public IReadOnlyList<WorklogResponse> RecentWorklogs { get; set; } = Array.Empty<WorklogResponse>();
     public IReadOnlyList<NextStepResponse> OpenNextSteps { get; set; } = Array.Empty<NextStepResponse>();
-    public IReadOnlyList<DecisionResponse> RecentDecisions { get; set; } = Array.Empty<DecisionResponse>();
     public IReadOnlyList<ResourceResponse> Resources { get; set; } = Array.Empty<ResourceResponse>();
     public IReadOnlyList<IdeaResponse> RecentIdeas { get; set; } = Array.Empty<IdeaResponse>();
     public int? DaysSinceLastActivity { get; set; }

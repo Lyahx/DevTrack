@@ -16,7 +16,6 @@ public static class RepositoryServiceCollectionExtensions
         services.AddScoped<ILearningModuleRepository, LearningModuleRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
         services.AddScoped<IWorklogRepository, WorklogRepository>();
-        services.AddScoped<IDecisionRepository, DecisionRepository>();
         services.AddScoped<INextStepRepository, NextStepRepository>();
         services.AddScoped<IIdeaRepository, IdeaRepository>();
         services.AddScoped<IResourceRepository, ResourceRepository>();

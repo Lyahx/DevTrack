@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { learningTracksApi } from "@/lib/api/learning";
 import { errorMessage } from "@/lib/error";
 import type {
-  AiDecisionItem,
   AiExtractionResult,
   AiIdeaItem,
   AiNextStepItem,
@@ -22,7 +21,6 @@ import type {
 
 type Selection = {
   worklogs: Set<number>;
-  decisions: Set<number>;
   nextSteps: Set<number>;
   ideas: Set<number>;
   resources: Set<number>;
@@ -48,7 +46,6 @@ export function AiImportModal({
   const [extracted, setExtracted] = useState<AiExtractionResult | null>(null);
   const [selection, setSelection] = useState<Selection>({
     worklogs: new Set(),
-    decisions: new Set(),
     nextSteps: new Set(),
     ideas: new Set(),
     resources: new Set(),
@@ -60,7 +57,6 @@ export function AiImportModal({
       setExtracted(null);
       setSelection({
         worklogs: new Set(),
-        decisions: new Set(),
         nextSteps: new Set(),
         ideas: new Set(),
         resources: new Set(),
@@ -75,7 +71,6 @@ export function AiImportModal({
       // Default: hepsi seçili
       setSelection({
         worklogs: selectAllOf(data.worklogs),
-        decisions: selectAllOf(data.decisions),
         nextSteps: selectAllOf(data.nextSteps),
         ideas: selectAllOf(data.ideas),
         resources: selectAllOf(data.resources),
@@ -85,7 +80,7 @@ export function AiImportModal({
   });
 
   const totalCount = extracted
-    ? extracted.worklogs.length + extracted.decisions.length + extracted.nextSteps.length + extracted.ideas.length + extracted.resources.length
+    ? extracted.worklogs.length + extracted.nextSteps.length + extracted.ideas.length + extracted.resources.length
     : 0;
 
   const looksLikeOnlyUrl = useMemo(() => {
@@ -94,14 +89,13 @@ export function AiImportModal({
     return /^https?:\/\/\S+$/i.test(t);
   }, [transcript]);
   const selectedCount =
-    selection.worklogs.size + selection.decisions.size + selection.nextSteps.size + selection.ideas.size + selection.resources.size;
+    selection.worklogs.size + selection.nextSteps.size + selection.ideas.size + selection.resources.size;
 
   const apply = useMutation({
     mutationFn: () => {
       if (!extracted) throw new Error("Önce çıkarım yap.");
       const payload: AiExtractionResult = {
         worklogs: extracted.worklogs.filter((_, i) => selection.worklogs.has(i)),
-        decisions: extracted.decisions.filter((_, i) => selection.decisions.has(i)),
         nextSteps: extracted.nextSteps.filter((_, i) => selection.nextSteps.has(i)),
         ideas: extracted.ideas.filter((_, i) => selection.ideas.has(i)),
         resources: extracted.resources.filter((_, i) => selection.resources.has(i)),
@@ -109,14 +103,13 @@ export function AiImportModal({
       return learningTracksApi.aiApply(trackId, payload);
     },
     onSuccess: (r) => {
-      const total = r.worklogsCreated + r.decisionsCreated + r.nextStepsCreated + r.ideasCreated + r.resourcesCreated;
+      const total = r.worklogsCreated + r.nextStepsCreated + r.ideasCreated + r.resourcesCreated;
       toast.success(`${total} öğe kaydedildi.`);
       // Close first, defer invalidations until after the close animation
       // so the dialog teardown doesn't race with multiple list re-renders.
       onOpenChange(false);
       window.setTimeout(() => {
         qc.invalidateQueries({ queryKey: ["worklogs"] });
-        qc.invalidateQueries({ queryKey: ["decisions"] });
         qc.invalidateQueries({ queryKey: ["next-steps"] });
         qc.invalidateQueries({ queryKey: ["ideas"] });
         qc.invalidateQueries({ queryKey: ["resources"] });
@@ -208,9 +201,7 @@ export function AiImportModal({
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
               <div className="space-y-1">
                 <p className="font-medium">AI hiçbir öğe çıkaramadı.</p>
-                <p className="text-[11px] opacity-90">
-                  Çoğunlukla şu sebeplerden olur:
-                </p>
+                <p className="text-[11px] opacity-90">Çoğunlukla şu sebeplerden olur:</p>
                 <ul className="ml-3 list-disc space-y-0.5 text-[11px] opacity-90">
                   <li>Yapıştırılan metin URL'den ibaretti — sayfanın içindeki sohbet metni gerek.</li>
                   <li>Transcript çok kısa (1-2 cümle) — modelin parçalayacak bir şey yok.</li>
@@ -218,12 +209,7 @@ export function AiImportModal({
                 </ul>
               </div>
             </div>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setExtracted(null);
-              }}
-            >
+            <Button variant="secondary" onClick={() => setExtracted(null)}>
               Yeniden dene
             </Button>
           </div>
@@ -232,7 +218,6 @@ export function AiImportModal({
             <Tabs defaultValue="worklogs">
               <TabsList>
                 <TabsTrigger value="worklogs">Worklog ({extracted.worklogs.length})</TabsTrigger>
-                <TabsTrigger value="decisions">Karar ({extracted.decisions.length})</TabsTrigger>
                 <TabsTrigger value="nextSteps">Adım ({extracted.nextSteps.length})</TabsTrigger>
                 <TabsTrigger value="ideas">Fikir ({extracted.ideas.length})</TabsTrigger>
                 <TabsTrigger value="resources">Kaynak ({extracted.resources.length})</TabsTrigger>
@@ -247,21 +232,8 @@ export function AiImportModal({
                     <>
                       <p className="text-[13px] text-text-secondary">{w.whatIDid}</p>
                       {w.whatsLeft ? <p className="mt-0.5 text-[11px] italic text-text-muted">Geriye kalan: {w.whatsLeft}</p> : null}
-                    </>
-                  )}
-                />
-              </TabsContent>
-
-              <TabsContent value="decisions" className="mt-3 max-h-[360px] overflow-y-auto pr-1">
-                <PreviewList
-                  items={extracted.decisions}
-                  selected={selection.decisions}
-                  onToggle={(i) => toggle("decisions", i)}
-                  render={(d: AiDecisionItem) => (
-                    <>
-                      <p className="text-[13px] font-medium text-text">{d.title}</p>
-                      <p className="mt-0.5 text-[12px] text-text-muted">{d.reasoning}</p>
-                      {d.alternatives ? <p className="mt-0.5 text-[11px] text-text-faint">Alternatifler: {d.alternatives}</p> : null}
+                      {w.reasoning ? <p className="mt-1 text-[11px] text-text-muted"><span className="font-medium text-text-secondary">Neden:</span> {w.reasoning}</p> : null}
+                      {w.alternatives ? <p className="mt-0.5 text-[11px] text-text-faint">Alternatifler: {w.alternatives}</p> : null}
                     </>
                   )}
                 />

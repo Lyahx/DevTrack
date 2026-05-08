@@ -74,6 +74,8 @@ public class WorklogService : IWorklogService
             UserId = userId,
             WhatIDid = request.WhatIDid,
             WhatsLeft = request.WhatsLeft,
+            Reasoning = request.Reasoning,
+            Alternatives = request.Alternatives,
             LoggedAt = request.LoggedAt ?? DateTime.UtcNow
         };
         worklog.ApplyOwner(request.Owner);
@@ -94,6 +96,8 @@ public class WorklogService : IWorklogService
 
         worklog.WhatIDid = request.WhatIDid;
         worklog.WhatsLeft = request.WhatsLeft;
+        worklog.Reasoning = request.Reasoning;
+        worklog.Alternatives = request.Alternatives;
         if (request.LoggedAt.HasValue) worklog.LoggedAt = request.LoggedAt.Value;
 
         await _worklogs.SaveChangesAsync(ct);
