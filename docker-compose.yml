@@ -1,0 +1,48 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: devtrack-mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: Developer
+    ports:
+      - "${MSSQL_HOST_PORT:-1433}:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    networks:
+      - devtrack-net
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  api:
+    build:
+      context: .
+      dockerfile: src/DevTrack.Api/Dockerfile
+    container_name: devtrack-api
+    depends_on:
+      mssql:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ConnectionStrings__Default: "Server=mssql,1433;Database=${MSSQL_DATABASE:-DevTrack};User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+      Jwt__Issuer: ${JWT_ISSUER:-DevTrack}
+      Jwt__Audience: ${JWT_AUDIENCE:-DevTrack}
+      Jwt__Secret: ${JWT_SECRET}
+      Jwt__AccessTokenLifetimeDays: ${JWT_LIFETIME_DAYS:-7}
+      DEVTRACK_AUTO_MIGRATE: "true"
+    ports:
+      - "${API_HOST_PORT:-8080}:8080"
+    networks:
+      - devtrack-net
+
+volumes:
+  mssql_data:
+
+networks:
+  devtrack-net:
+    driver: bridge
