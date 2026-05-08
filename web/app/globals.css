@@ -228,6 +228,12 @@
   html {
     @apply font-sans;
     font-size: 14px;
+    /* Force a permanent vertical scrollbar so opening any modal (which scroll-locks
+       the body) cannot shift the page sideways when the scrollbar disappears.
+       scrollbar-gutter: stable alone is not enough on routes whose content fits
+       in the viewport — there is no scrollbar to gutter. */
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
   }
   h1, h2, h3, h4 {
     color: var(--color-text);

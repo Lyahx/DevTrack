@@ -1,6 +1,10 @@
 import { apiDelete, apiGet, apiPost, apiPut } from "@/lib/api";
 import type { PagedResult } from "@/types/api";
 import type {
+  AiExtractionResult,
+  AiImportApplyResult,
+} from "@/types/aiImport";
+import type {
   LearningModuleCreateRequest,
   LearningModuleOrderUpdateRequest,
   LearningModuleResponse,
@@ -26,6 +30,10 @@ export const learningTracksApi = {
     apiPost<LearningTrackResponse>(`/learning-tracks/${id}/status`, req),
   attachTag: (id: number, tagId: number) => apiPost(`/learning-tracks/${id}/tags/${tagId}`),
   detachTag: (id: number, tagId: number) => apiDelete(`/learning-tracks/${id}/tags/${tagId}`),
+  aiExtract: (id: number, transcript: string) =>
+    apiPost<AiExtractionResult>(`/learning-tracks/${id}/ai-import`, { transcript }),
+  aiApply: (id: number, payload: AiExtractionResult) =>
+    apiPost<AiImportApplyResult>(`/learning-tracks/${id}/ai-import/apply`, payload),
 };
 
 export const learningModulesApi = {

@@ -42,3 +42,8 @@ public class ForbiddenAppException : AppException
 {
     public ForbiddenAppException(string message) : base("FORBIDDEN", message, 403) { }
 }
+
+public class AiServiceException : AppException
+{
+    public AiServiceException(string code, string message, int statusCode = 502) : base(code, message, statusCode) { }
+}

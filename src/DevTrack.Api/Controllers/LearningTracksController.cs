@@ -1,3 +1,4 @@
+using DevTrack.Domain.DTOs.AiImport;
 using DevTrack.Domain.DTOs.Common;
 using DevTrack.Domain.DTOs.LearningTracks;
 using DevTrack.Service.Interfaces;
@@ -13,17 +14,23 @@ namespace DevTrack.Api.Controllers;
 public class LearningTracksController : ControllerBase
 {
     private readonly ILearningTrackService _service;
+    private readonly IAiExtractionService _aiExtraction;
+    private readonly IAiImportService _aiImport;
     private readonly IValidator<LearningTrackCreateRequest> _createValidator;
     private readonly IValidator<LearningTrackUpdateRequest> _updateValidator;
     private readonly IValidator<LearningTrackStatusUpdateRequest> _statusValidator;
 
     public LearningTracksController(
         ILearningTrackService service,
+        IAiExtractionService aiExtraction,
+        IAiImportService aiImport,
         IValidator<LearningTrackCreateRequest> createValidator,
         IValidator<LearningTrackUpdateRequest> updateValidator,
         IValidator<LearningTrackStatusUpdateRequest> statusValidator)
     {
         _service = service;
+        _aiExtraction = aiExtraction;
+        _aiImport = aiImport;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
         _statusValidator = statusValidator;
@@ -88,5 +95,21 @@ public class LearningTracksController : ControllerBase
     {
         await _service.DetachTagAsync(id, tagId, ct);
         return Ok(ApiResponse<object>.Ok(new { learningTrackId = id, tagId }));
+    }
+
+    [HttpPost("{id:int}/ai-import")]
+    public async Task<ActionResult<ApiResponse<AiExtractionResult>>> AiImport(int id, [FromBody] AiImportRequest request, CancellationToken ct)
+    {
+        // Confirm ownership before hitting the AI provider.
+        await _service.GetAsync(id, includeDeleted: false, ct);
+        var result = await _aiExtraction.ExtractAsync(request.Transcript, ct);
+        return Ok(ApiResponse<AiExtractionResult>.Ok(result));
+    }
+
+    [HttpPost("{id:int}/ai-import/apply")]
+    public async Task<ActionResult<ApiResponse<AiImportApplyResult>>> AiImportApply(int id, [FromBody] AiImportApplyRequest request, CancellationToken ct)
+    {
+        var result = await _aiImport.ApplyToLearningTrackAsync(id, request, ct);
+        return Ok(ApiResponse<AiImportApplyResult>.Ok(result));
     }
 }

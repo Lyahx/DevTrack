@@ -94,6 +94,7 @@ public class LearningTrackService : ILearningTrackService
         track.Name = request.Name;
         track.Description = request.Description;
         track.Source = request.Source;
+        track.AiChatUrl = request.AiChatUrl;
 
         await _tracks.SaveChangesAsync(ct);
         return _mapper.Map<LearningTrackResponse>(track);

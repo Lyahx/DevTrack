@@ -29,6 +29,12 @@ const schema = z.object({
   name: z.string().min(1, "İsim gerekli.").max(200),
   description: z.string().max(2000).nullable().optional(),
   source: z.string().max(200).nullable().optional(),
+  aiChatUrl: z
+    .string()
+    .max(1000)
+    .nullable()
+    .optional()
+    .refine((v) => !v || /^https?:\/\/.+/i.test(v), { message: "Geçerli bir http(s) URL'i girin." }),
   status: z.enum(["Active", "Paused", "Completed", "Abandoned"]),
 });
 type Values = z.infer<typeof schema>;
@@ -52,6 +58,7 @@ export function LearningTrackFormModal({
       name: initial?.name ?? "",
       description: initial?.description ?? "",
       source: initial?.source ?? "",
+      aiChatUrl: initial?.aiChatUrl ?? "",
       status: initial?.status ?? "Active",
     },
   });
@@ -62,6 +69,7 @@ export function LearningTrackFormModal({
         name: initial?.name ?? "",
         description: initial?.description ?? "",
         source: initial?.source ?? "",
+        aiChatUrl: initial?.aiChatUrl ?? "",
         status: initial?.status ?? "Active",
       });
     }
@@ -79,7 +87,7 @@ export function LearningTrackFormModal({
     onError: (e) => toast.error(errorMessage(e)),
   });
   const update = useMutation({
-    mutationFn: (v: Values) => learningTracksApi.update(initial!.id, { name: v.name, description: v.description, source: v.source }),
+    mutationFn: (v: Values) => learningTracksApi.update(initial!.id, { name: v.name, description: v.description, source: v.source, aiChatUrl: v.aiChatUrl }),
     onSuccess: () => {
       toast.success("Eğitim güncellendi.");
       qc.invalidateQueries({ queryKey: ["learning-tracks"] });
@@ -109,6 +117,13 @@ export function LearningTrackFormModal({
           </Field>
           <Field label="Kaynak" error={formState.errors.source?.message}>
             <Input placeholder="Claude, Coursera, kitap…" {...register("source")} />
+          </Field>
+          <Field
+            label="Claude / AI sohbet URL'i"
+            hint="Eğitime bağlı bir Claude paylaşım linki — referans tutmak ve transcript yapıştırmak için."
+            error={formState.errors.aiChatUrl?.message}
+          >
+            <Input placeholder="https://claude.ai/share/..." {...register("aiChatUrl")} />
           </Field>
           <Field label="Açıklama" error={formState.errors.description?.message}>
             <Textarea rows={3} {...register("description")} />

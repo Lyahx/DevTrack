@@ -71,6 +71,15 @@ docker compose up -d api
 
 `.env` repo kökünde mevcut (kapatma sırasında silinmez, yeniden generate gerekmez).
 
+## AI ile içe aktar (LM Studio / Ollama)
+
+- LearningTrack form'una `aiChatUrl` eklendi (Claude/ChatGPT share link, opsiyonel referans).
+- `POST /api/v1/learning-tracks/{id}/ai-import` — transcript yapıştırılır → yerel AI provider (LM Studio / Ollama) `worklogs / decisions / nextSteps / ideas / resources` extract eder.
+- `POST .../ai-import/apply` — kullanıcının seçtiği item'ları tek transaction'da kaydeder.
+- Eğitim detay sayfası "Genel" tab üstünde violet hero kart + "İçe aktar" butonu.
+- Provider config docker-compose `Ai__BaseUrl` / `Ai__Model` / `Ai__ApiKey` env'leri (.env'de `AI_BASE_URL` vb.). Default LM Studio `http://host.docker.internal:1234/v1`, model `llama-3.1-8b-instruct`.
+- LM Studio'yu host'ta çalıştır → "Server" sekmesinden modeli yükle ve "Start Server" → DevTrack hazır.
+
 ## Bilinen pürüzler / TODO
 
 - Soft-restore (geri yükleme) hâlâ yok — `/trash` sayfası kullanıcıya bunu söylüyor.

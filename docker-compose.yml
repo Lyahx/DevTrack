@@ -34,7 +34,12 @@ services:
       Jwt__Audience: ${JWT_AUDIENCE:-DevTrack}
       Jwt__Secret: ${JWT_SECRET}
       Jwt__AccessTokenLifetimeDays: ${JWT_LIFETIME_DAYS:-7}
+      Ai__BaseUrl: ${AI_BASE_URL:-http://host.docker.internal:1234/v1}
+      Ai__Model: ${AI_MODEL:-llama-3.1-8b-instruct}
+      Ai__ApiKey: ${AI_API_KEY:-lm-studio}
       DEVTRACK_AUTO_MIGRATE: "true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "${API_HOST_PORT:-8080}:8080"
     networks:

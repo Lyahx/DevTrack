@@ -14,6 +14,7 @@ public class LearningTrackConfiguration : IEntityTypeConfiguration<LearningTrack
         builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
         builder.Property(x => x.Description).HasMaxLength(2000);
         builder.Property(x => x.Source).HasMaxLength(200);
+        builder.Property(x => x.AiChatUrl).HasMaxLength(1000);
         builder.Property(x => x.Status).HasConversion<int>();
 
         builder.HasOne(x => x.User)

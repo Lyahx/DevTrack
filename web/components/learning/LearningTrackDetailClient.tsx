@@ -1,11 +1,12 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, MoreVertical, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, MoreVertical, Pencil, Plus, Sparkles, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AiImportModal } from "@/components/learning/AiImportModal";
 import { DecisionTab } from "@/components/decisions/DecisionTab";
 import { IdeaTab } from "@/components/ideas/IdeaTab";
 import { LearningModuleFormModal } from "@/components/learning/LearningModuleFormModal";
@@ -32,6 +33,7 @@ export function LearningTrackDetailClient({ trackId }: { trackId: number }) {
   const qc = useQueryClient();
   const [editTrackOpen, setEditTrackOpen] = useState(false);
   const [newModuleOpen, setNewModuleOpen] = useState(false);
+  const [aiImportOpen, setAiImportOpen] = useState(false);
 
   const track = useQuery({ queryKey: ["learning-track", trackId], queryFn: () => learningTracksApi.get(trackId) });
   const modules = useQuery({ queryKey: ["modules", trackId], queryFn: () => learningModulesApi.listForTrack(trackId) });
@@ -143,7 +145,34 @@ export function LearningTrackDetailClient({ trackId }: { trackId: number }) {
           <TabsTrigger value="resources">Kaynaklar</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="mt-6">
-          <div className="space-y-3">
+          <div className="space-y-6">
+            <div className="overflow-hidden rounded-lg border border-border bg-gradient-to-br from-primary/10 via-surface-1 to-surface-1 p-5 shadow-soft">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                    <Sparkles className="h-3 w-3" /> AI ile içe aktar
+                  </div>
+                  <p className="text-[13px] text-text-secondary">
+                    Claude / ChatGPT konuşmanı yapıştır — yerel AI worklog, karar, adım, fikir ve kaynakları otomatik çıkarsın.
+                  </p>
+                  {t.aiChatUrl ? (
+                    <a
+                      href={t.aiChatUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 inline-flex items-center gap-1 font-mono text-[11px] text-text-faint underline underline-offset-2 hover:text-text-muted"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      {t.aiChatUrl.length > 60 ? `${t.aiChatUrl.slice(0, 60)}…` : t.aiChatUrl}
+                    </a>
+                  ) : null}
+                </div>
+                <Button onClick={() => setAiImportOpen(true)}>
+                  <Sparkles className="h-4 w-4" /> İçe aktar
+                </Button>
+              </div>
+            </div>
+
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-medium">Modüller</h2>
               <Button size="sm" onClick={() => setNewModuleOpen(true)}>
@@ -187,6 +216,7 @@ export function LearningTrackDetailClient({ trackId }: { trackId: number }) {
 
       <LearningTrackFormModal open={editTrackOpen} onOpenChange={setEditTrackOpen} initial={t} />
       <LearningModuleFormModal open={newModuleOpen} onOpenChange={setNewModuleOpen} trackId={trackId} defaultOrder={(modules.data?.length ?? 0)} />
+      <AiImportModal open={aiImportOpen} onOpenChange={setAiImportOpen} trackId={trackId} aiChatUrl={t.aiChatUrl} />
     </div>
   );
 }

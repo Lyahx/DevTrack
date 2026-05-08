@@ -10,7 +10,17 @@ public class LearningTrackCreateRequestValidator : AbstractValidator<LearningTra
         RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
         RuleFor(x => x.Description).MaximumLength(2000);
         RuleFor(x => x.Source).MaximumLength(200);
+        RuleFor(x => x.AiChatUrl)
+            .MaximumLength(1000)
+            .Must(BeValidHttpUrlOrEmpty).WithMessage("Geçerli bir http(s) URL'i girin.");
         RuleFor(x => x.Status).IsInEnum();
+    }
+
+    private static bool BeValidHttpUrlOrEmpty(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return true;
+        return Uri.TryCreate(url, UriKind.Absolute, out var uri)
+            && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 }
 
@@ -21,6 +31,16 @@ public class LearningTrackUpdateRequestValidator : AbstractValidator<LearningTra
         RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
         RuleFor(x => x.Description).MaximumLength(2000);
         RuleFor(x => x.Source).MaximumLength(200);
+        RuleFor(x => x.AiChatUrl)
+            .MaximumLength(1000)
+            .Must(BeValidHttpUrlOrEmpty).WithMessage("Geçerli bir http(s) URL'i girin.");
+    }
+
+    private static bool BeValidHttpUrlOrEmpty(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return true;
+        return Uri.TryCreate(url, UriKind.Absolute, out var uri)
+            && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 }
 

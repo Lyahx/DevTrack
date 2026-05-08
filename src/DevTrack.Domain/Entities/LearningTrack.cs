@@ -8,6 +8,7 @@ public class LearningTrack : SoftDeletableEntity
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Source { get; set; }
+    public string? AiChatUrl { get; set; }
     public LearningTrackStatus Status { get; set; } = LearningTrackStatus.Active;
     public DateTime? LastActivityAt { get; set; }
     public DateTime? CompletedAt { get; set; }

@@ -7,6 +7,7 @@ public class LearningTrackCreateRequest
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Source { get; set; }
+    public string? AiChatUrl { get; set; }
     public LearningTrackStatus Status { get; set; } = LearningTrackStatus.Active;
 }
 
@@ -15,6 +16,7 @@ public class LearningTrackUpdateRequest
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Source { get; set; }
+    public string? AiChatUrl { get; set; }
 }
 
 public class LearningTrackStatusUpdateRequest

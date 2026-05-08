@@ -7,6 +7,7 @@ export type LearningTrackResponse = {
   name: string;
   description: string | null;
   source: string | null;
+  aiChatUrl: string | null;
   status: LearningTrackStatus;
   lastActivityAt: string | null;
   completedAt: string | null;
@@ -21,6 +22,7 @@ export type LearningTrackCreateRequest = {
   name: string;
   description?: string | null;
   source?: string | null;
+  aiChatUrl?: string | null;
   status?: LearningTrackStatus;
 };
 
@@ -28,6 +30,7 @@ export type LearningTrackUpdateRequest = {
   name: string;
   description?: string | null;
   source?: string | null;
+  aiChatUrl?: string | null;
 };
 
 export type LearningTrackStatusUpdateRequest = { status: LearningTrackStatus };

@@ -37,7 +37,7 @@ try
     builder.Services
         .AddDevTrackInfrastructure(builder.Configuration)
         .AddDevTrackRepositories()
-        .AddDevTrackServices();
+        .AddDevTrackServices(builder.Configuration);
 
     builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
     builder.Services.AddHttpContextAccessor();
