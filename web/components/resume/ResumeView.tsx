@@ -1,7 +1,17 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  CheckSquare,
+  ExternalLink,
+  FileText,
+  Lightbulb,
+  Link2,
+  MapPin,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { ResourceTypeBadge, ModuleStatusBadge } from "@/components/common/StatusBadge";
@@ -108,7 +118,9 @@ export function ResumeView({
 
       {components && components.length > 0 ? (
         <section className="space-y-3">
-          <h2 className="text-lg font-medium text-muted-foreground">📍 Şu an nerede kaldım</h2>
+          <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
+            <MapPin className="h-4 w-4" /> Şu an nerede kaldım
+          </h2>
           <div className="space-y-3">
             {components.map((c) => (
               <Card key={c.id} className="bg-muted/30">
@@ -133,7 +145,9 @@ export function ResumeView({
 
       {modules && modules.length > 0 ? (
         <section className="space-y-3">
-          <h2 className="text-lg font-medium text-muted-foreground">📚 Modüller</h2>
+          <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
+            <BookOpen className="h-4 w-4" /> Modüller
+          </h2>
           <div className="space-y-2">
             {modules.map((m) => (
               <Link
@@ -151,7 +165,9 @@ export function ResumeView({
       ) : null}
 
       <section className="space-y-3">
-        <h2 className="text-lg font-medium text-muted-foreground">📝 Son worklog&apos;lar</h2>
+        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
+          <FileText className="h-4 w-4" /> Son worklog&apos;lar
+        </h2>
         {recentWorklogs.length === 0 ? (
           <Card><CardContent className="py-4 text-sm text-muted-foreground">Henüz worklog yok.</CardContent></Card>
         ) : (
@@ -175,7 +191,9 @@ export function ResumeView({
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-medium text-muted-foreground">✅ Açık adımlar ({openNextSteps.length})</h2>
+        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
+          <CheckSquare className="h-4 w-4" /> Açık adımlar ({openNextSteps.length})
+        </h2>
         {openNextSteps.length === 0 ? (
           <Card><CardContent className="py-4 text-sm text-muted-foreground">Açık adım yok. Sakin.</CardContent></Card>
         ) : (
@@ -196,7 +214,9 @@ export function ResumeView({
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-medium text-muted-foreground">💡 Son kararlar</h2>
+        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
+          <Lightbulb className="h-4 w-4" /> Son kararlar
+        </h2>
         {recentDecisions.length === 0 ? (
           <Card><CardContent className="py-4 text-sm text-muted-foreground">Henüz karar yok.</CardContent></Card>
         ) : (
@@ -222,7 +242,9 @@ export function ResumeView({
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-medium text-muted-foreground">🔗 Kaynaklar ({resources.length})</h2>
+        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
+          <Link2 className="h-4 w-4" /> Kaynaklar ({resources.length})
+        </h2>
         {resources.length === 0 ? (
           <Card><CardContent className="py-4 text-sm text-muted-foreground">Henüz kaynak yok.</CardContent></Card>
         ) : (
@@ -254,7 +276,9 @@ export function ResumeView({
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-medium text-muted-foreground">✨ Yakalanmış fikirler</h2>
+        <h2 className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
+          <Sparkles className="h-4 w-4" /> Yakalanmış fikirler
+        </h2>
         {recentIdeas.length === 0 ? (
           <Card><CardContent className="py-4 text-sm text-muted-foreground">Açık fikir yok.</CardContent></Card>
         ) : (

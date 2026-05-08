@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { BookOpen, Plus } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
@@ -75,6 +75,7 @@ export function LearningTracksList() {
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState
+          icon={<BookOpen className="h-6 w-6" />}
           title="Eğitim yok."
           description={search ? "Sonuç yok." : "İlk eğitimi başlat."}
           action={!search ? <Button onClick={() => setCreateOpen(true)}><Plus className="h-4 w-4" /> Yeni eğitim</Button> : undefined}

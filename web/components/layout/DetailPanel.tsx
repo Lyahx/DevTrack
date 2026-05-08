@@ -158,9 +158,11 @@ export function DetailPanel() {
               <Skeleton className="h-12 w-full" />
             </div>
           ) : !items.length ? (
-            <div className="rounded-md border border-dashed p-4 text-center text-sm text-muted-foreground">
-              <Check className="mx-auto mb-2 h-5 w-5" />
-              {scopeEmpty(scope)}
+            <div className="rounded-lg border border-dashed bg-card/50 px-4 py-8 text-center">
+              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                <Check className="h-5 w-5" />
+              </div>
+              <p className="text-sm text-muted-foreground">{scopeEmpty(scope)}</p>
             </div>
           ) : (
             items.slice(0, 12).map((s) => (

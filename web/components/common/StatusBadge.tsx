@@ -13,10 +13,10 @@ import type {
 } from "@/types/enums";
 
 const projectStatusClass: Record<ProjectStatus, string> = {
-  Active: "bg-emerald-100 text-emerald-800 hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300",
-  Paused: "bg-amber-100 text-amber-900 hover:bg-amber-100 dark:bg-amber-950 dark:text-amber-300",
-  Completed: "bg-sky-100 text-sky-900 hover:bg-sky-100 dark:bg-sky-950 dark:text-sky-300",
-  Abandoned: "bg-zinc-200 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300",
+  Active: "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:ring-emerald-800/60",
+  Paused: "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300",
+  Completed: "bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-300",
+  Abandoned: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800/40 dark:text-zinc-500",
 };
 
 export function ProjectStatusBadge({ status }: { status: ProjectStatus }) {
@@ -25,7 +25,7 @@ export function ProjectStatusBadge({ status }: { status: ProjectStatus }) {
 
 export function ProjectStatusDot({ status }: { status: ProjectStatus }) {
   const cls: Record<ProjectStatus, string> = {
-    Active: "bg-emerald-500",
+    Active: "bg-emerald-500 ring-2 ring-emerald-500/30",
     Paused: "bg-amber-500",
     Completed: "bg-sky-500",
     Abandoned: "bg-zinc-400",
@@ -34,9 +34,9 @@ export function ProjectStatusDot({ status }: { status: ProjectStatus }) {
 }
 
 const priorityClass: Record<NextStepPriority, string> = {
-  Low: "bg-zinc-100 text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-300",
-  Medium: "bg-amber-100 text-amber-900 hover:bg-amber-100 dark:bg-amber-950 dark:text-amber-300",
-  High: "bg-rose-100 text-rose-900 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300",
+  Low: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800/50 dark:text-zinc-400",
+  Medium: "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300",
+  High: "bg-rose-500 text-white ring-1 ring-rose-600 dark:bg-rose-600 dark:text-rose-50 dark:ring-rose-500",
 };
 
 export function PriorityBadge({ priority }: { priority: NextStepPriority }) {

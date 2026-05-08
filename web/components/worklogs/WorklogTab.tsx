@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { FileText, Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/common/EmptyState";
@@ -69,6 +69,7 @@ export function WorklogTab({ scope }: { scope: Scope }) {
         </div>
       ) : !list.data?.length ? (
         <EmptyState
+          icon={<FileText className="h-6 w-6" />}
           title="Henüz worklog yok."
           description="Bugün ne ilerledi? Hızlıca bir kayıt al."
           action={

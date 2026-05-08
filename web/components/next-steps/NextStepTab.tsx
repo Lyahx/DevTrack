@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { CheckCircle2, Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -195,6 +195,7 @@ export function NextStepTab({ scope }: { scope: Scope }) {
         <div className="space-y-3">{[0, 1].map((i) => <Skeleton key={i} className="h-16 w-full" />)}</div>
       ) : !list.data?.length ? (
         <EmptyState
+          icon={<CheckCircle2 className="h-6 w-6" />}
           title="Açık adım yok."
           description="Bir sonraki yapacağın şey ne? Yaz."
           action={<Button size="sm" onClick={() => { setEditing(null); setFormOpen(true); }}><Plus className="h-4 w-4" /> İlk adım</Button>}

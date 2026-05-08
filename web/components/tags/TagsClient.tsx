@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Tags, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -108,6 +108,7 @@ export function TagsClient() {
         <Skeleton className="h-32 w-full" />
       ) : !list.data?.length ? (
         <EmptyState
+          icon={<Tags className="h-6 w-6" />}
           title="Etiket yok."
           description="İlk etiketini oluştur (örn. .NET, Claude, MVP)."
           action={<Button onClick={() => { setEditing(null); setFormOpen(true); }}><Plus className="h-4 w-4" /> Yeni etiket</Button>}

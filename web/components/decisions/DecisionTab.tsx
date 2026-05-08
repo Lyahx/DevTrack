@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Lightbulb, Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -155,6 +155,7 @@ export function DecisionTab({ scope }: { scope: Scope }) {
         <div className="space-y-3">{[0, 1].map((i) => <Skeleton key={i} className="h-24 w-full" />)}</div>
       ) : !list.data?.length ? (
         <EmptyState
+          icon={<Lightbulb className="h-6 w-6" />}
           title="Henüz karar yok."
           description="Verdiğin önemli kararları, neden öyle karar verdiğinle birlikte not et."
           action={<Button size="sm" onClick={() => { setEditing(null); setFormOpen(true); }}><Plus className="h-4 w-4" /> İlk karar</Button>}

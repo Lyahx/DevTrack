@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, Pencil, Plus, Sparkles, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -186,6 +186,7 @@ export function IdeaTab({ scope }: { scope: Scope }) {
         <div className="space-y-2">{[0, 1].map((i) => <Skeleton key={i} className="h-20 w-full" />)}</div>
       ) : !list.data?.length ? (
         <EmptyState
+          icon={<Sparkles className="h-6 w-6" />}
           title="Henüz fikir yok."
           description="Aklına gelenleri buraya bırak — kaybolmasın."
           action={<Button size="sm" onClick={() => { setEditing(null); setFormOpen(true); }}><Plus className="h-4 w-4" /> İlk fikir</Button>}
